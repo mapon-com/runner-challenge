@@ -37,7 +37,7 @@ class ActivityService
 
         $file = R::dispense('files');
         $file->content = file_get_contents($pathname);
-        $file->md5 = md5($file->gpx);
+        $file->md5 = md5($file->content);
         $file->user_id = $user->id;
         $file->created_at = time();
         $file->original_filename = $filename;
