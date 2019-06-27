@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\UserModel;
 use InvalidArgumentException;
 use League\Plates\Engine;
 
@@ -13,15 +14,25 @@ class Controller
     /** @var TrackService */
     private $tracks;
 
+    /** @var UserModel|null */
+    private $user;
+
+    /** @var string */
+    private $flash;
+
     public function __construct()
     {
         $this->users = new UserService;
         $this->tracks = new TrackService;
+        $this->user = $this->users->getLoggedIn();
+
+        $this->flash = $_SESSION['_flash'] ?? null;
+        unset($_SESSION['_flash']);
     }
 
     public function index()
     {
-        if (!$this->users->getLoggedIn()) {
+        if (!$this->user) {
             return $this->redirect('register');
         }
 
@@ -30,7 +41,7 @@ class Controller
 
     public function board()
     {
-        if (!$this->users->getLoggedIn()) {
+        if (!$this->user) {
             return $this->redirect('register');
         }
         return $this->render('board');
@@ -38,28 +49,28 @@ class Controller
 
     public function upload()
     {
-        if (!$this->users->getLoggedIn()) {
+        if (!$this->user) {
             return $this->redirect('');
         }
 
-        $file = $_FILES['gpx'];
-
         try {
-            $wasUploaded = $this->tracks->upload(
-                $this->users->getLoggedIn(),
-                $file['name'],
-                $file['tmp_name']
+            $this->tracks->upload(
+                $this->user,
+                $_FILES['gpx']['name'],
+                $_FILES['gpx']['tmp_name'],
+                $_POST['workoutUrl'],
+                $_POST['comment']
             );
         } catch (InvalidArgumentException $e) {
-            $wasUploaded = false;
+            return $this->redirect('board', 'Failed to upload workout: ' . $e->getMessage());
         }
 
-        return $this->redirect('board?was-uploaded=' . (int)$wasUploaded);
+        return $this->redirect('board', 'Workout uploaded!');
     }
 
     public function register()
     {
-        if ($this->users->getLoggedIn()) {
+        if ($this->user) {
             return $this->redirect('board');
         }
 
@@ -78,15 +89,20 @@ class Controller
         if ($user) {
             if ($user->passwordMatches($password)) {
                 $this->users->logIn($user);
-                return $this->redirect('board?logged-in');
+                return $this->redirect('board', 'Welcome back, ' . htmlspecialchars($user->name));
             }
-            return $this->redirect('register?bad-password');
+            return $this->redirect('register', 'Password is not correct!');
         }
 
-        $user = $this->users->register($email, $password, $name);
+        try {
+            $user = $this->users->register($email, $password, $name);
+        } catch (InvalidArgumentException $e) {
+            return $this->redirect('register', $e->getMessage());
+        }
+
         $this->users->logIn($user);
 
-        return $this->redirect('board?registered');
+        return $this->redirect('board', 'Successfully registered!');
     }
 
     public function logout()
@@ -95,14 +111,20 @@ class Controller
         return $this->redirect('');
     }
 
-    private function redirect($url)
+    private function redirect($url, string $flashMessage = null)
     {
+        $_SESSION['_flash'] = $flashMessage;
         header("Location: /$url");
         return "";
     }
 
     private function render(string $view, array $variables = [])
     {
+        $variables += [
+            'user' => $this->user,
+            '_flash' => $this->flash,
+        ];
+
         $templates = Engine::create(__DIR__ . '/../views');
         return $templates->render(basename($view), $variables);
     }

@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var UserModel|null $user
+ * @var string|null $_flash
+ */
+
+use App\Models\UserModel; ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,16 +20,29 @@
 </head>
 <body>
 
+<?php if ($user) { ?>
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1>
+            <h2 class="mt-2">
                 Ready for the challenge?
-                <a href="/logout" class="btn btn-primary float-right mt-2" role="button" aria-pressed="true">Sign out</a>
-            </h1>
-
+                <a href="/logout" class="btn btn-primary float-right mt-1" role="button" aria-pressed="true">
+                    Sign out
+                </a>
+            </h2>
+            <hr>
         </div>
     </div>
+<?php } ?>
+
+    <?php if ($_flash) { ?>
+        <div class="row">
+            <div class="col">
+                <p class="alert alert-info"><?= $_flash; ?></p>
+            </div>
+        </div>
+    <?php } ?>
+
     <div class="row">
         <div class="col"><?= $v->section('content') ?></div>
     </div>

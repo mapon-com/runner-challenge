@@ -9,6 +9,8 @@ class UserModel
     public $id;
     public $password;
     public $email;
+    public $teamId;
+    public $name;
 
     public static function fromBean(?OODBBean $bean): UserModel
     {
@@ -21,6 +23,8 @@ class UserModel
         $m->id = $bean->id;
         $m->password = $bean->password;
         $m->email = $bean->email;
+        $m->teamId = $bean->team_id;
+        $m->name = $bean->name;
 
         return $m;
     }
