@@ -1,12 +1,39 @@
-<?php $v->layout('layout', ['title' => 'Board']) ?>
+<?php $v->layout('layout', ['title' => $title]) ?>
+
+<?php
+
+$links = [
+    '/board' => 'Activites',
+    '/leaderboard/teams' => 'Teams',
+    '/leaderboard/people' => 'People',
+];
+
+?>
 
 <div class="row">
-    <div class="col"></div>
-    <div class="col"></div>
-
     <div class="col">
+        <div class="card text-center">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <?php
+                    foreach ($links as $url => $title) {
+                        $isActive = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === $url;
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?= ($isActive ? 'active' : ''); ?>" href="<?= $url; ?>">
+                                <?= $title; ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div class="card-body"><?= $v->section('card') ?></div>
+        </div>
+    </div>
+
+    <div class="col-4">
         <div class="card">
-            <div class="card-header"> Log an activity </div>
+            <div class="card-header"> Log an activity</div>
             <div class="card-body">
                 <form action="/upload" method="post" enctype="multipart/form-data" id="gpx-form">
                     <div class="form-group">

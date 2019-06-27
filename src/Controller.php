@@ -2,34 +2,10 @@
 
 namespace App;
 
-use App\Models\UserModel;
 use InvalidArgumentException;
-use League\Plates\Engine;
 
-class Controller
+class Controller extends BaseController
 {
-    /** @var UserService */
-    private $users;
-
-    /** @var TrackService */
-    private $tracks;
-
-    /** @var UserModel|null */
-    private $user;
-
-    /** @var string */
-    private $flash;
-
-    public function __construct()
-    {
-        $this->users = new UserService;
-        $this->tracks = new TrackService;
-        $this->user = $this->users->getLoggedIn();
-
-        $this->flash = $_SESSION['_flash'] ?? null;
-        unset($_SESSION['_flash']);
-    }
-
     public function index()
     {
         return $this->redirect('board');
@@ -37,7 +13,7 @@ class Controller
 
     public function board()
     {
-        return $this->render('board');
+        return $this->render('my-activities');
     }
 
     public function upload()
@@ -94,36 +70,18 @@ class Controller
         return $this->redirect('board', 'Successfully registered!');
     }
 
+    public function leaderboardTeams(){
+        return $this->render('leaderboard-teams');
+    }
+
+    public function leaderboardPeople(){
+        return $this->render('leaderboard-people');
+    }
+
     public function logout()
     {
         $this->users->logOut();
         return $this->redirect('');
     }
 
-    private function redirect($url, string $flashMessage = null)
-    {
-        $_SESSION['_flash'] = $flashMessage;
-        header("Location: /$url");
-        return "";
-    }
-
-    private function render(string $view, array $variables = [])
-    {
-        $variables += [
-            'user' => $this->user,
-            '_flash' => $this->flash,
-        ];
-
-        $templates = Engine::create(__DIR__ . '/../views');
-        return $templates->render(basename($view), $variables);
-    }
-
-    public function call(array $parameters)
-    {
-        $isPublic = $parameters['public'] ?? false;
-        if (!$isPublic && !$this->user) {
-            return $this->redirect('register', 'Please, sing in!');
-        }
-        return $this->{$parameters['action']}();
-    }
 }
