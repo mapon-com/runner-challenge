@@ -1,8 +1,44 @@
 <?php
+
+use App\Models\ActivityModel;
+use Carbon\Carbon;
+
 $v->layout('dashboard', ['title' => 'My Activites']);
 $v->push('card');
-?>
+
+/**
+ * @var ActivityModel[] $activities
+ */
+
+if ($activities) { ?>
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">Distance</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Average speed</th>
+            <th scope="col">Date</th>
+            <th scope="col">Uploaded</th>
+            <th scope="col">&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($activities as $a) { ?>
+            <tr>
+                <td><?= round($a->distance); ?> meters</td>
+                <td><?= $a->duration; ?> seconds</td>
+                <td><?= round($a->averageSpeed, 2); ?> km/h</td>
+                <td><?= Carbon::createFromTimestamp($a->activityAt)->diffForHumans(); ?></td>
+                <td><?= Carbon::createFromTimestamp($a->createdAt)->diffForHumans(); ?></td>
+                <td class="text-right">
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } else { ?>
     <h5 class="card-title">Hello, there!</h5>
     <p class="card-text">When you log an activity, it will show up here!</p>
-<?php
+    <?php
+}
 $v->end();

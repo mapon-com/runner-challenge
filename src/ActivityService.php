@@ -2,13 +2,14 @@
 
 namespace App;
 
+use App\Models\ActivityModel;
 use App\Models\UserModel;
 use Exception;
 use InvalidArgumentException;
 use RedBeanPHP\R;
 use Waddle\Parsers\GPXParser;
 
-class TrackService
+class ActivityService
 {
     public function upload(
         UserModel $user,
@@ -47,14 +48,30 @@ class TrackService
         $activity->file_id = $file->id;
         $activity->activity_url = $activityUrl;
         $activity->comment = mb_substr(trim($comment), 0, 500);
-        $activity->distsance = $result->getTotalDistance();
+        $activity->distance = $result->getTotalDistance();
         $activity->average_speed = $result->getAverageSpeedInKPH();
         $activity->max_speed = $result->getMaxSpeedInKPH();
         $activity->duration = $result->getTotalDuration();
+        $activity->activity_at = $result->getStartTime('U');
         $activity->created_at = time();
         $activity->deleted_at = null;
         R::store($activity);
 
         return true;
+    }
+
+    /**
+     * @param UserModel $user
+     * @return ActivityModel[]
+     */
+    public function getActivities(UserModel $user): array
+    {
+        $beans = R::findLike('activities', [
+            'user_id' => $user->id
+        ], 'ORDER BY created_at DESC');
+
+        return array_map(function ($bean) {
+            return ActivityModel::fromBean($bean);
+        }, $beans);
     }
 }

@@ -10,8 +10,8 @@ abstract class BaseController
     /** @var UserService */
     protected $users;
 
-    /** @var TrackService */
-    protected $tracks;
+    /** @var ActivityService */
+    protected $activities;
 
     /** @var UserModel|null */
     protected $user;
@@ -22,7 +22,7 @@ abstract class BaseController
     public function __construct()
     {
         $this->users = new UserService;
-        $this->tracks = new TrackService;
+        $this->activities = new ActivityService;
         $this->user = $this->users->getLoggedIn();
 
         $this->flash = $_SESSION['_flash'] ?? null;

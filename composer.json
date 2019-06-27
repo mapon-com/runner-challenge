@@ -8,7 +8,8 @@
         "symfony/routing": "^4.3",
         "league/plates": "v4.0.0-alpha",
         "duckfusion/waddle": "dev-master",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "nesbot/carbon": "^2.20"
     },
     "authors": [
         {

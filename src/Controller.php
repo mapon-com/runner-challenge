@@ -13,13 +13,15 @@ class Controller extends BaseController
 
     public function board()
     {
-        return $this->render('my-activities');
+        return $this->render('my-activities', [
+            'activities' => $this->activities->getActivities($this->user),
+        ]);
     }
 
     public function upload()
     {
         try {
-            $this->tracks->upload(
+            $this->activities->upload(
                 $this->user,
                 $_FILES['gpx']['name'],
                 $_FILES['gpx']['tmp_name'],
@@ -70,11 +72,13 @@ class Controller extends BaseController
         return $this->redirect('board', 'Successfully registered!');
     }
 
-    public function leaderboardTeams(){
+    public function leaderboardTeams()
+    {
         return $this->render('leaderboard-teams');
     }
 
-    public function leaderboardPeople(){
+    public function leaderboardPeople()
+    {
         return $this->render('leaderboard-people');
     }
 
