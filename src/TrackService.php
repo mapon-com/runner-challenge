@@ -6,7 +6,6 @@ use App\Models\UserModel;
 use InvalidArgumentException;
 use RedBeanPHP\R;
 use Waddle\Parsers\GPXParser;
-use Waddle\Parsers\TCXParser;
 
 class TrackService
 {
@@ -14,11 +13,11 @@ class TrackService
     {
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        if (!in_array($extension, ['gpx', 'tcx'])) {
+        if (!in_array($extension, ['gpx'])) {
             throw new InvalidArgumentException('Invalid file extension. Has to be GPX or TCX');
         }
 
-        $parser = $extension == 'gpx' ? new GPXParser : new TCXParser;
+        $parser = new GPXParser;
 
         try {
             /** @noinspection PhpParamsInspection */
@@ -34,6 +33,7 @@ class TrackService
         $bean->average_speed = $result->getAverageSpeedInKPH();
         $bean->max_speed = $result->getMaxSpeedInKPH();
         $bean->duration = $result->getTotalDuration();
+        $bean->original_filename = $filename;
         $bean->uploaded_at = time();
 
         $trackId = R::store($bean);
