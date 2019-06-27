@@ -17,8 +17,8 @@ class Bootstrap
 
         $routes = new RouteCollection;
 
-        $routes->add('index', new Route('/', ['action' => 'index']));
-        $routes->add('register', new Route('/register', ['action' => 'register']));
+        $routes->add('index', new Route('/', ['action' => 'index', 'public' => true]));
+        $routes->add('register', new Route('/register', ['action' => 'register', 'public' => true]));
         $routes->add('board', new Route('/board', ['action' => 'board']));
         $routes->add('logout', new Route('/logout', ['action' => 'logout']));
         $routes->add('upload', new Route('/upload', ['action' => 'upload']));
@@ -35,7 +35,6 @@ class Bootstrap
 
         R::setup('sqlite:' . __DIR__ . '/../storage/database.sqlite');
 
-        $controller = new Controller;
-        return $controller->{$parameters['action']}();
+        return (new Controller)->call($parameters);
     }
 }

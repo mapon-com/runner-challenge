@@ -32,27 +32,16 @@ class Controller
 
     public function index()
     {
-        if (!$this->user) {
-            return $this->redirect('register');
-        }
-
         return $this->redirect('board');
     }
 
     public function board()
     {
-        if (!$this->user) {
-            return $this->redirect('register');
-        }
         return $this->render('board');
     }
 
     public function upload()
     {
-        if (!$this->user) {
-            return $this->redirect('');
-        }
-
         try {
             $this->tracks->upload(
                 $this->user,
@@ -127,5 +116,14 @@ class Controller
 
         $templates = Engine::create(__DIR__ . '/../views');
         return $templates->render(basename($view), $variables);
+    }
+
+    public function call(array $parameters)
+    {
+        $isPublic = $parameters['public'] ?? false;
+        if (!$isPublic && !$this->user) {
+            return $this->redirect('register', 'Please, sing in!');
+        }
+        return $this->{$parameters['action']}();
     }
 }

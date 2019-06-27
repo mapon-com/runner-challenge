@@ -20,20 +20,20 @@ use App\Models\UserModel; ?>
 </head>
 <body>
 
-<?php if ($user) { ?>
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h2 class="mt-2">
-                Ready for the challenge?
-                <a href="/logout" class="btn btn-primary float-right mt-1" role="button" aria-pressed="true">
-                    Sign out
-                </a>
-            </h2>
-            <hr>
+<div class="container pt-2">
+    <?php if ($user) { ?>
+        <div class="row">
+            <div class="col">
+                <h2>
+                    Ready for the challenge?
+                    <a href="/logout" class="btn btn-primary float-right mt-1" role="button" aria-pressed="true">
+                        Sign out
+                    </a>
+                </h2>
+                <hr>
+            </div>
         </div>
-    </div>
-<?php } ?>
+    <?php } ?>
 
     <?php if ($_flash) { ?>
         <div class="row">
