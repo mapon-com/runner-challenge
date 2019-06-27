@@ -1,2 +1,19 @@
 <?php $v->layout('layout', ['title' => 'Board']) ?>
 
+<div class="row">
+    <div class="col-5">
+        <form action="/upload" method="post" enctype="multipart/form-data" class="form-inline" id="gpx-form">
+            <div class="custom-file mr-sm-2">
+                <input type="file" class="custom-file-input" name="gpx" id="customFile">
+                <label class="custom-file-label" id="custom-file-label" for="customFile">Workout file (GPX or TCX)</label>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('customFile').onchange = function () {
+        document.getElementById('custom-file-label').textContent = this.files[0].name;
+        document.getElementById('gpx-form').submit();
+    };
+</script>

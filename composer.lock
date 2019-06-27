@@ -4,8 +4,51 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "85d5605aa7c76bc643b05fcaee11ec59",
+    "content-hash": "a3b173d57ee9a6b2f02b1a9f222be1e4",
     "packages": [
+        {
+            "name": "duckfusion/waddle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cwarwicker/Waddle.git",
+                "reference": "ad6c1332487d7372257b4cdff61bdb5b601a2662"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cwarwicker/Waddle/zipball/ad6c1332487d7372257b4cdff61bdb5b601a2662",
+                "reference": "ad6c1332487d7372257b4cdff61bdb5b601a2662",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Waddle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Conn Warwicker"
+                }
+            ],
+            "description": "PHP Library for parsing running GPS activities and calculating metrics",
+            "keywords": [
+                "gps",
+                "gpx",
+                "parse",
+                "pwx",
+                "running",
+                "tcx"
+            ],
+            "time": "2018-04-04T18:57:12+00:00"
+        },
         {
             "name": "gabordemooij/redbean",
             "version": "v5.3.1",
@@ -444,7 +487,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "league/plates": 15
+        "league/plates": 15,
+        "duckfusion/waddle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

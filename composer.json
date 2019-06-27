@@ -6,7 +6,8 @@
         "gabordemooij/redbean": "^5.3",
         "league/flysystem": "^1.0",
         "symfony/routing": "^4.3",
-        "league/plates": "v4.0.0-alpha"
+        "league/plates": "v4.0.0-alpha",
+        "duckfusion/waddle": "dev-master"
     },
     "authors": [
         {

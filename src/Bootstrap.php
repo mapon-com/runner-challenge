@@ -21,6 +21,7 @@ class Bootstrap
         $routes->add('register', new Route('/register', ['action' => 'register']));
         $routes->add('board', new Route('/board', ['action' => 'board']));
         $routes->add('logout', new Route('/logout', ['action' => 'logout']));
+        $routes->add('upload', new Route('/upload', ['action' => 'upload']));
 
         $matcher = new UrlMatcher($routes, new RequestContext);
 
