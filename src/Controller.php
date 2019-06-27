@@ -58,14 +58,14 @@ class Controller
                 $this->user,
                 $_FILES['gpx']['name'],
                 $_FILES['gpx']['tmp_name'],
-                $_POST['workoutUrl'],
+                $_POST['activityUrl'],
                 $_POST['comment']
             );
         } catch (InvalidArgumentException $e) {
-            return $this->redirect('board', 'Failed to upload workout: ' . $e->getMessage());
+            return $this->redirect('board', $e->getMessage());
         }
 
-        return $this->redirect('board', 'Workout uploaded!');
+        return $this->redirect('board', 'Activity logged!');
     }
 
     public function register()

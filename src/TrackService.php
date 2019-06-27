@@ -14,20 +14,24 @@ class TrackService
         UserModel $user,
         string $filename,
         string $pathname,
-        string $workoutUrl,
+        string $activityUrl,
         string $comment
     ): bool {
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
         if (!in_array($extension, ['gpx'])) {
-            throw new InvalidArgumentException('Invalid file extension. Has to be GPX or TCX');
+            throw new InvalidArgumentException('Invalid file extension. Has to be or GPX');
+        }
+
+        if (!filter_var($activityUrl, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException('Invalid activity URL. Make sure to copy the full URL from your browser.');
         }
 
         try {
             /** @noinspection PhpParamsInspection */
             $result = (new GPXParser)->parse($pathname);
         } catch (Exception $e) {
-            throw new InvalidArgumentException('Could not parse workout file');
+            throw new InvalidArgumentException('The activity file could not be read.');
         }
 
         $file = R::dispense('files');
@@ -41,7 +45,7 @@ class TrackService
         $activity = R::dispense('activities');
         $activity->user_id = $user->id;
         $activity->file_id = $file->id;
-        $activity->workout_url = $workoutUrl;
+        $activity->activity_url = $activityUrl;
         $activity->comment = mb_substr(trim($comment), 0, 500);
         $activity->distsance = $result->getTotalDistance();
         $activity->average_speed = $result->getAverageSpeedInKPH();
