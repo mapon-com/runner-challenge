@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\ActivityModel;
-use Carbon\Carbon;
 
 $v->layout('dashboard', ['title' => 'My Activites']);
 $v->push('card');
@@ -25,12 +24,19 @@ if ($activities) { ?>
         <tbody>
         <?php foreach ($activities as $a) { ?>
             <tr>
-                <td><?= round($a->distance); ?> meters</td>
-                <td><?= $a->duration; ?> seconds</td>
-                <td><?= round($a->averageSpeed, 2); ?> km/h</td>
-                <td><?= Carbon::createFromTimestamp($a->activityAt)->diffForHumans(); ?></td>
-                <td><?= Carbon::createFromTimestamp($a->createdAt)->diffForHumans(); ?></td>
+                <td><?= $a->getReadableDistance(); ?></td>
+                <td><?= $a->getReadableDuration(); ?></td>
+                <td><?= $a->getReadableSpeed(); ?></td>
+                <td><?= $a->getReadableActivityAt(); ?></td>
+                <td><?= $a->getReadableCreatedAt(); ?></td>
                 <td class="text-right">
+                    <form method="post">
+                        <input type="hidden" name="activityId" value="<?= $a->id; ?>">
+                        <button type="submit" class="btn btn-sm btn-danger p-1 pt-0 pb-0"
+                                onclick="return confirm('Sure?');">
+                            Delete
+                        </button>
+                    </form>
                 </td>
             </tr>
         <?php } ?>

@@ -33,7 +33,7 @@ abstract class BaseController
     {
         $isPublic = $parameters['public'] ?? false;
         if (!$isPublic && !$this->user) {
-            return $this->redirect('register', 'Please, sing in!');
+            return $this->redirect('register');
         }
         return $this->{$parameters['action']}();
     }
