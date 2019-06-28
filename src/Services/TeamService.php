@@ -72,4 +72,10 @@ class TeamService
             $user->save();
         }
     }
+
+    public function unassignUser(?UserModel $user)
+    {
+        $user->teamId = null;
+        $user->save();
+    }
 }

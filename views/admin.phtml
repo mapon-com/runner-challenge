@@ -46,6 +46,10 @@ $v->layout('layout', ['title' => 'Admin']);
                                         <?php foreach ($teamUsers as $u) { ?>
                                             <li class="list-group-item p-0">
                                                 <?= htmlspecialchars($u->name); ?>
+                                                <form method="post" action="/admin/unassign-team" class="float-right">
+                                                    <input type="hidden" name="userId" value="<?=$u->id;?>">
+                                                    <button type="submit" class="btn btn-secondary btn-sm m-0 p-0 mr-2">&times;</button>
+                                                </form>
                                             </li>
                                         <?php } ?>
                                     </ul>

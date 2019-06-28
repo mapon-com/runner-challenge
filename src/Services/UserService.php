@@ -40,7 +40,7 @@ class UserService
         return null;
     }
 
-    public function findUserById($id): ?UserModel
+    public function findById($id): ?UserModel
     {
         $bean = R::findOne('users', 'id = ?', [$id]);
 
@@ -60,7 +60,7 @@ class UserService
     {
         $id = $_SESSION['userId'] ?? null;
         if ($id) {
-            return $this->findUserById($id);
+            return $this->findById($id);
         }
 
         return null;
@@ -88,7 +88,7 @@ class UserService
     public function getByIds($userIds): array
     {
         return array_reduce($userIds, function ($carry, int $userId) {
-            $user = $this->findUserById($userId);
+            $user = $this->findById($userId);
             if ($user) {
                 $carry[] = $user;
             }

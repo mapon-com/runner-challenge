@@ -116,4 +116,11 @@ class Controller extends BaseController
 
         return $this->redirect('admin', 'People have been assigned to a team.');
     }
+
+    public function unassignTeam()
+    {
+        $user = $this->users->findById($_POST['userId']);
+        $this->teams->unassignUser($user);
+        return $this->redirect('admin', 'A person has been unassigned from a team.');
+    }
 }
