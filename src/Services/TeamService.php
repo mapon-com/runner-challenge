@@ -78,4 +78,15 @@ class TeamService
         $user->teamId = null;
         $user->save();
     }
+
+    public function deleteTeam(TeamModel $team)
+    {
+        $users = UserModel::findByTeam($team->id);
+        foreach($users as $v){
+            $v->teamId = null;
+            $v->save();
+        }
+
+        $team->delete();
+    }
 }

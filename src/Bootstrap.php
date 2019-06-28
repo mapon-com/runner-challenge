@@ -30,6 +30,7 @@ class Bootstrap
         $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
         $routes->add('assign-team', new Route('/admin/assign-team', ['action' => 'assignTeam', 'admin' => true]));
         $routes->add('unassign-team', new Route('/admin/unassign-team', ['action' => 'unassignTeam', 'admin' => true]));
+        $routes->add('delete-team', new Route('/admin/delete-team', ['action' => 'deleteTeam', 'admin' => true]));
 
         $matcher = new UrlMatcher($routes, new RequestContext);
 

@@ -34,7 +34,13 @@ $v->layout('layout', ['title' => 'Admin']);
                 <div class="card-columns">
                     <?php foreach ($teams as $team) { ?>
                         <div class="card">
-                            <div class="card-header p-1 pl-2"><?= htmlspecialchars($team->name); ?></div>
+                            <div class="card-header p-1 pl-2">
+                                <?= htmlspecialchars($team->name); ?>
+                                <form method="post" action="/admin/delete-team" class="float-right">
+                                    <input type="hidden" name="teamId" value="<?= $team->id; ?>">
+                                    <button type="submit" class="btn btn-link btn-sm m-0 p-0 mr-2">&times;</button>
+                                </form>
+                            </div>
                             <div class="card-body p-1 pl-2">
                                 <?php
                                 $teamUsers = $findUsers($team);
@@ -47,8 +53,10 @@ $v->layout('layout', ['title' => 'Admin']);
                                             <li class="list-group-item p-0">
                                                 <?= htmlspecialchars($u->name); ?>
                                                 <form method="post" action="/admin/unassign-team" class="float-right">
-                                                    <input type="hidden" name="userId" value="<?=$u->id;?>">
-                                                    <button type="submit" class="btn btn-secondary btn-sm m-0 p-0 mr-2">&times;</button>
+                                                    <input type="hidden" name="userId" value="<?= $u->id; ?>">
+                                                    <button type="submit" class="btn btn-secondary btn-sm m-0 p-0 mr-2">
+                                                        &times;
+                                                    </button>
                                                 </form>
                                             </li>
                                         <?php } ?>

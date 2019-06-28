@@ -53,4 +53,9 @@ class TeamModel
 
         return $m;
     }
+
+    public function delete()
+    {
+        R::trash('teams', $this->id);
+    }
 }
