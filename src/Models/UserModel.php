@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use RedBeanPHP\OODBBean;
+use RedBeanPHP\R;
 
 class UserModel
 {
@@ -34,5 +35,24 @@ class UserModel
     public function passwordMatches($password): bool
     {
         return password_verify($password, $this->password);
+    }
+
+    public function save()
+    {
+        $bean = R::dispense('users');
+
+        if ($this->id) {
+            $bean->id = $this->id;
+        }
+
+        $bean->password = $this->password;
+        $bean->email = $this->email;
+        $bean->team_id = $this->teamId;
+        $bean->name = $this->name;
+        $bean->is_admin = (int)$this->isAdmin;
+
+        R::store($bean);
+
+        $this->id = $bean->id;
     }
 }

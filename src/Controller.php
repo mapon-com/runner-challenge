@@ -102,4 +102,18 @@ class Controller extends BaseController
         $team = $this->teams->addTeam($this->challenge);
         return $this->redirect('admin', 'Team "' . $team->name . '" was added');
     }
+
+    public function assignTeam()
+    {
+        $team = $this->teams->getById($this->challenge, $_POST['teamId']);
+        $users = $this->users->getByIds($_POST['userIds']);
+
+        if (!$team) {
+            $this->redirect('admin', 'Team was not found');
+        }
+
+        $this->teams->assignUsers($team, $users);
+
+        return $this->redirect('admin', 'People have been assigned to a team.');
+    }
 }

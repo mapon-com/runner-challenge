@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ChallengeModel;
 use App\Models\TeamModel;
+use App\Models\UserModel;
 use RedBeanPHP\R;
 
 class TeamService
@@ -14,19 +15,18 @@ class TeamService
      */
     public function addTeam(ChallengeModel $challenge): TeamModel
     {
-        $team = R::dispense('teams');
-        $team->challenge_id = $challenge->id;
+        $team = new TeamModel;
+        $team->challengeId = $challenge->id;
         $team->name = "";
-        $team->captain_id = 0;
-        $team->image_id = 0;
-        $team->created_at = time();
-
-        R::store($team);
+        $team->captainId = 0;
+        $team->imageId = 0;
+        $team->createdAt = time();
+        $team->save();
 
         $team->name = 'Team #' . $team->id;
-        R::store($team);
+        $team->save();
 
-        return TeamModel::fromBean($team);
+        return $team;
     }
 
     /**
@@ -40,5 +40,36 @@ class TeamService
         return array_map(function ($bean) {
             return TeamModel::fromBean($bean);
         }, $beans);
+    }
+
+    /**
+     * @param ChallengeModel $challenge
+     * @param int $teamId
+     * @return TeamModel|null
+     */
+    public function getById(ChallengeModel $challenge, int $teamId): ?TeamModel
+    {
+        $bean = R::findOne('teams', 'id = ? AND challenge_id = ?', [$teamId, $challenge->id]);
+
+        if ($bean) {
+            return TeamModel::fromBean($bean);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param TeamModel $team
+     * @param UserModel[] $users
+     */
+    public function assignUsers(TeamModel $team, array $users)
+    {
+        foreach ($users as $user) {
+            if ($user->teamId) {
+                continue;
+            }
+            $user->teamId = $team->id;
+            $user->save();
+        }
     }
 }

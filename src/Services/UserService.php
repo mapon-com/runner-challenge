@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUndefinedFieldInspection */
+<?php
 
 namespace App\Services;
 
@@ -18,16 +18,15 @@ class UserService
             throw new InvalidArgumentException('Email already registered');
         }
 
-        $bean = R::dispense('users');
+        $user = new UserModel;
 
-        $bean->email = $email;
-        $bean->password = password_hash($password, PASSWORD_DEFAULT);
-        $bean->name = trim($name);
-        $bean->is_admin = 0;
+        $user->email = $email;
+        $user->password = password_hash($password, PASSWORD_DEFAULT);
+        $user->name = trim($name);
+        $user->isAdmin = 0;
+        $user->save();
 
-        R::store($bean);
-
-        return UserModel::fromBean($bean);
+        return $user;
     }
 
     public function findUser($email): ?UserModel
@@ -80,5 +79,20 @@ class UserService
         return array_map(function ($bean) {
             return UserModel::fromBean($bean);
         }, R::findAll('users'));
+    }
+
+    /**
+     * @param $userIds
+     * @return UserModel[]
+     */
+    public function getByIds($userIds): array
+    {
+        return array_reduce($userIds, function ($carry, int $userId) {
+            $user = $this->findUserById($userId);
+            if ($user) {
+                $carry[] = $user;
+            }
+            return $carry;
+        }, []);
     }
 }

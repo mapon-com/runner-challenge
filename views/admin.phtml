@@ -39,12 +39,12 @@ $v->layout('layout', ['title' => 'Admin']);
                                 <?php
                                 $teamUsers = $findUsers($team);
                                 if (!$teamUsers) {
-                                    ?><em>Team is empty.</em><?php
+                                    ?><em class="text-muted">&ndash;</em><?php
                                 } else {
                                     ?>
                                     <ul class="list-group list-group-flush">
                                         <?php foreach ($teamUsers as $u) { ?>
-                                            <li class="list-group-item">
+                                            <li class="list-group-item p-0">
                                                 <?= htmlspecialchars($u->name); ?>
                                             </li>
                                         <?php } ?>
@@ -68,16 +68,32 @@ $v->layout('layout', ['title' => 'Admin']);
                 <?php
                 $teamlessUsers = $findUsers(new TeamModel);
                 if (!$teamlessUsers) {
-                    ?><em>Everyone is in a team.</em><?php
+                    ?><em class="text-muted">&ndash;</em><?php
                 } else {
                     ?>
-                    <ul class="list-group list-group-flush">
-                        <?php foreach ($teamlessUsers as $u) { ?>
-                            <li class="list-group-item p-1">
-                                <?= htmlspecialchars($u->name); ?>
-                            </li>
-                        <?php } ?>
-                    </ul>
+                    <form action="/admin/assign-team" method="post">
+                        <ul class="list-group list-group-flush">
+                            <?php foreach ($teamlessUsers as $u) { ?>
+                                <li class="list-group-item p-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="userIds[]"
+                                               id="user<?= $u->id; ?>" value="<?= $u->id; ?>">
+                                        <label class="custom-control-label d-block" for="user<?= $u->id; ?>">
+                                            <?= htmlspecialchars($u->name); ?>
+                                        </label>
+                                    </div>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <select name="teamId" class="custom-select custom-select-sm mt-4">
+                            <option value="0">-- Select a team --</option>
+                            <?php foreach ($teams as $team) { ?>
+                                <option value="<?= $team->id; ?>"><?= htmlspecialchars($team->name); ?></option>
+                            <?php } ?>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm btn-block mt-2">Assign to a team
+                        </button>
+                    </form>
                     <?php
                 }
                 ?>
