@@ -105,7 +105,7 @@ class Controller extends BaseController
 
     public function assignTeam()
     {
-        $team = $this->teams->getById($this->challenge, $_POST['teamId']);
+        $team = $this->teams->getById($_POST['teamId']);
         $users = $this->users->getByIds($_POST['userIds'] ?? []);
 
         if (!$team) {
@@ -126,7 +126,7 @@ class Controller extends BaseController
 
     public function deleteTeam()
     {
-        $team = $this->teams->getById($this->challenge, $_POST['teamId']);
+        $team = $this->teams->getById($_POST['teamId']);
         $this->teams->deleteTeam($team);
         return $this->redirect('admin', 'Team has been delete');
     }

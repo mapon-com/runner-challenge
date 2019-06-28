@@ -36,6 +36,7 @@ $v->layout('layout', ['title' => 'Admin']);
                         <div class="card">
                             <div class="card-header p-1 pl-2">
                                 <?= htmlspecialchars($team->name); ?>
+                                (<?=$team->getReadableDistance();?>)
                                 <form method="post" action="/admin/delete-team" class="float-right">
                                     <input type="hidden" name="teamId" value="<?= $team->id; ?>">
                                     <button type="submit" class="btn btn-link btn-sm m-0 p-0 mr-2">&times;</button>

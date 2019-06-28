@@ -43,13 +43,17 @@ class TeamService
     }
 
     /**
-     * @param ChallengeModel $challenge
      * @param int $teamId
+     * @param ChallengeModel $challenge
      * @return TeamModel|null
      */
-    public function getById(ChallengeModel $challenge, int $teamId): ?TeamModel
+    public function getById(int $teamId, ?ChallengeModel $challenge = null): ?TeamModel
     {
-        $bean = R::findOne('teams', 'id = ? AND challenge_id = ?', [$teamId, $challenge->id]);
+        if ($challenge) {
+            $bean = R::findOne('teams', 'id = ? AND challenge_id = ?', [$teamId, $challenge->id]);
+        } else {
+            $bean = R::findOne('teams', 'id = ?', [$teamId]);
+        }
 
         if ($bean) {
             return TeamModel::fromBean($bean);
@@ -71,22 +75,42 @@ class TeamService
             $user->teamId = $team->id;
             $user->save();
         }
+        $this->recalculateTeamScore($team);
     }
 
     public function unassignUser(?UserModel $user)
     {
+        $team = $this->getById($user->teamId);
         $user->teamId = null;
         $user->save();
+
+        if ($team) {
+            $this->recalculateTeamScore($team);
+        }
     }
 
     public function deleteTeam(TeamModel $team)
     {
         $users = UserModel::findByTeam($team->id);
-        foreach($users as $v){
+        foreach ($users as $v) {
             $v->teamId = null;
             $v->save();
         }
 
         $team->delete();
+    }
+
+    public function recalculateTeamScore(TeamModel $team)
+    {
+        $scores = R::getRow('
+            SELECT SUM(distance) AS total_distance, SUM(duration) AS total_duration FROM activities a
+            JOIN users u ON u.id = a.user_id
+            WHERE u.team_id = ?
+            GROUP BY u.team_id
+        ', [$team->id]);
+
+        $team->totalDistance = (float)$scores['total_distance'] ?? 0;
+        $team->totalDuration = (float)$scores['total_duration'] ?? 0;
+        $team->save();
     }
 }

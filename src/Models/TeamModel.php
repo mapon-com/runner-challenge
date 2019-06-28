@@ -19,17 +19,25 @@ class TeamModel
     public $challengeId;
     /** @var int */
     public $createdAt;
+    /** @var float */
+    public $totalDistance;
+    /** @var float */
+    public $totalDuration;
 
     public function save()
     {
         $team = R::dispense('teams');
+
         if ($this->id) {
             $team->id = $this->id;
         }
+
         $team->challenge_id = $this->challengeId;
         $team->name = $this->name;
         $team->captain_id = $this->captainId;
         $team->image_id = $this->imageId;
+        $team->total_duration = $this->totalDuration;
+        $team->total_distance = $this->totalDistance;
         $team->created_at = $this->createdAt;
 
         R::store($team);
@@ -48,7 +56,10 @@ class TeamModel
         $m->id = $bean->id;
         $m->name = $bean->name;
         $m->captainId = $bean->captain_id;
+        $m->challengeId = $bean->challenge_id;
         $m->imageId = $bean->image_id;
+        $m->totalDuration = $bean->total_duration;
+        $m->totalDistance = $bean->total_distance;
         $m->createdAt = $bean->created_at;
 
         return $m;
@@ -57,5 +68,10 @@ class TeamModel
     public function delete()
     {
         R::trash('teams', $this->id);
+    }
+
+    public function getReadableDistance(): string
+    {
+        return round($this->totalDistance / 1000, 2) . ' km';
     }
 }
