@@ -1,0 +1,87 @@
+<?php
+
+use App\Models\TeamModel;
+use App\Models\UserModel;
+
+/**
+ * @var TeamModel[] $teams
+ * @var UserModel[] $users
+ */
+
+/**
+ * @param TeamModel $team
+ * @return UserModel[]
+ */
+$findUsers = function (TeamModel $team) use (&$users) {
+    return array_filter($users, function (UserModel $user) use ($team) {
+        return $user->teamId == $team->id;
+    });
+};
+
+$v->layout('layout', ['title' => 'Admin']);
+?>
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                Teams
+                <form action="/admin/add-team" method="post" class="float-right">
+                    <button type="submit" class="btn btn-primary btn-sm">Create a team</button>
+                </form>
+            </div>
+            <div class="card-body">
+
+                <div class="card-columns">
+                    <?php foreach ($teams as $team) { ?>
+                        <div class="card">
+                            <div class="card-header p-1 pl-2"><?= htmlspecialchars($team->name); ?></div>
+                            <div class="card-body p-1 pl-2">
+                                <?php
+                                $teamUsers = $findUsers($team);
+                                if (!$teamUsers) {
+                                    ?><em>Team is empty.</em><?php
+                                } else {
+                                    ?>
+                                    <ul class="list-group list-group-flush">
+                                        <?php foreach ($teamUsers as $u) { ?>
+                                            <li class="list-group-item">
+                                                <?= htmlspecialchars($u->name); ?>
+                                            </li>
+                                        <?php } ?>
+                                    </ul>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header">People without teams</div>
+            <div class="card-body">
+                <?php
+                $teamlessUsers = $findUsers(new TeamModel);
+                if (!$teamlessUsers) {
+                    ?><em>Everyone is in a team.</em><?php
+                } else {
+                    ?>
+                    <ul class="list-group list-group-flush">
+                        <?php foreach ($teamlessUsers as $u) { ?>
+                            <li class="list-group-item p-1">
+                                <?= htmlspecialchars($u->name); ?>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

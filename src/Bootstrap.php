@@ -24,6 +24,8 @@ class Bootstrap
         $routes->add('upload', new Route('/upload', ['action' => 'upload']));
         $routes->add('team-leaderboard', new Route('/leaderboard/teams', ['action' => 'leaderboardTeams']));
         $routes->add('people-leaderboard', new Route('/leaderboard/people', ['action' => 'leaderboardPeople']));
+        $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
+        $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
 
         $matcher = new UrlMatcher($routes, new RequestContext);
 

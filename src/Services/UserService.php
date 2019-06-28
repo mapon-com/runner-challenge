@@ -1,6 +1,6 @@
 <?php /** @noinspection PhpUndefinedFieldInspection */
 
-namespace App;
+namespace App\Services;
 
 use App\Models\UserModel;
 use InvalidArgumentException;
@@ -23,6 +23,7 @@ class UserService
         $bean->email = $email;
         $bean->password = password_hash($password, PASSWORD_DEFAULT);
         $bean->name = trim($name);
+        $bean->is_admin = 0;
 
         R::store($bean);
 
@@ -40,23 +41,44 @@ class UserService
         return null;
     }
 
+    public function findUserById($id): ?UserModel
+    {
+        $bean = R::findOne('users', 'id = ?', [$id]);
+
+        if ($bean) {
+            return UserModel::fromBean($bean);
+        }
+
+        return null;
+    }
+
     public function logIn(UserModel $user)
     {
-        $_SESSION['email'] = $user->email;
+        $_SESSION['userId'] = $user->id;
     }
 
     public function getLoggedIn(): ?UserModel
     {
-        $email = $_SESSION['email'] ?? null;
-        if (!$email) {
-            return null;
+        $id = $_SESSION['userId'] ?? null;
+        if ($id) {
+            return $this->findUserById($id);
         }
 
-        return $this->findUser($email);
+        return null;
     }
 
     public function logOut()
     {
-        unset($_SESSION['email']);
+        unset($_SESSION['userId']);
+    }
+
+    /**
+     * @return UserModel[]
+     */
+    public function getAll(): array
+    {
+        return array_map(function ($bean) {
+            return UserModel::fromBean($bean);
+        }, R::findAll('users'));
     }
 }

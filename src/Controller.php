@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\UserService;
 use InvalidArgumentException;
 
 class Controller extends BaseController
@@ -88,4 +89,17 @@ class Controller extends BaseController
         return $this->redirect('');
     }
 
+    public function admin()
+    {
+        return $this->render('admin', [
+            'teams' => $this->teams->getAll($this->challenge),
+            'users' => $this->users->getAll(),
+        ]);
+    }
+
+    public function addTeam()
+    {
+        $team = $this->teams->addTeam($this->challenge);
+        return $this->redirect('admin', 'Team "' . $team->name . '" was added');
+    }
 }

@@ -11,6 +11,7 @@ class UserModel
     public $email;
     public $teamId;
     public $name;
+    public $isAdmin;
 
     public static function fromBean(?OODBBean $bean): UserModel
     {
@@ -25,6 +26,7 @@ class UserModel
         $m->email = $bean->email;
         $m->teamId = $bean->team_id;
         $m->name = $bean->name;
+        $m->isAdmin = (bool)$bean->is_admin;
 
         return $m;
     }
