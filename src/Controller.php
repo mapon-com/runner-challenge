@@ -33,6 +33,10 @@ class Controller extends BaseController
             return $this->redirect('board', $e->getMessage());
         }
 
+        if ($this->user->teamId) {
+            $this->teams->recalculateTeamScore($this->teams->getById($this->user->teamId));
+        }
+
         return $this->redirect('board', 'Activity logged!');
     }
 

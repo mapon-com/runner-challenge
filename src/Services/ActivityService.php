@@ -35,9 +35,16 @@ class ActivityService
             throw new InvalidArgumentException('The activity file could not be read.');
         }
 
+        $content = file_get_contents($pathname);
+        $md5 = md5($content);
+
+        if (R::findOne('files', 'md5 = ?', [$md5])) {
+            throw new InvalidArgumentException('This activity has already been uploaded');
+        }
+
         $file = R::dispense('files');
-        $file->content = file_get_contents($pathname);
-        $file->md5 = md5($file->content);
+        $file->content = $content;
+        $file->md5 = $md5;
         $file->user_id = $user->id;
         $file->created_at = time();
         $file->original_filename = $filename;
@@ -67,7 +74,7 @@ class ActivityService
     public function getActivities(UserModel $user): array
     {
         $beans = R::findLike('activities', [
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ], 'ORDER BY created_at DESC');
 
         return array_map(function ($bean) {

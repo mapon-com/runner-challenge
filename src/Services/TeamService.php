@@ -75,6 +75,7 @@ class TeamService
             $user->teamId = $team->id;
             $user->save();
         }
+
         $this->recalculateTeamScore($team);
     }
 

@@ -29,15 +29,7 @@ if ($activities) { ?>
                 <td><?= $a->getReadableSpeed(); ?></td>
                 <td><?= $a->getReadableActivityAt(); ?></td>
                 <td><?= $a->getReadableCreatedAt(); ?></td>
-                <td class="text-right">
-                    <form method="post">
-                        <input type="hidden" name="activityId" value="<?= $a->id; ?>">
-                        <button type="submit" class="btn btn-sm btn-danger p-1 pt-0 pb-0"
-                                onclick="return confirm('Sure?');">
-                            Delete
-                        </button>
-                    </form>
-                </td>
+                <td class="text-right"></td>
             </tr>
         <?php } ?>
         </tbody>
