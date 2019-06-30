@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ActivityModel;
+use App\Models\ChallengeModel;
 use App\Models\UserModel;
 use Exception;
 use InvalidArgumentException;
@@ -13,6 +14,7 @@ class ActivityService
 {
     public function upload(
         UserModel $user,
+        ChallengeModel $challenge,
         string $filename,
         string $pathname,
         string $activityUrl,
@@ -43,6 +45,7 @@ class ActivityService
         }
 
         $file = R::dispense('files');
+        $file->challenge_id = $challenge->id;
         $file->content = $content;
         $file->md5 = $md5;
         $file->user_id = $user->id;
@@ -51,6 +54,7 @@ class ActivityService
         R::store($file);
 
         $activity = R::dispense('activities');
+        $activity->challenge_id = $challenge->id;
         $activity->user_id = $user->id;
         $activity->file_id = $file->id;
         $activity->activity_url = $activityUrl;

@@ -35,9 +35,14 @@ class Controller extends BaseController
             return $this->redirect('board', 'Activities cannot be logged at this moment');
         }
 
+        if (!$this->challenge) {
+            return $this->redirect('board', 'No active challenges.');
+        }
+
         try {
             $this->activities->upload(
                 $this->user,
+                $this->challenge,
                 $_FILES['gpx']['name'],
                 $_FILES['gpx']['tmp_name'],
                 $_POST['activityUrl'],

@@ -9,6 +9,7 @@ use RedBeanPHP\OODBBean;
 class ActivityModel
 {
     public $id;
+    public $challengeId;
     public $userId;
     public $fileId;
     public $workoutUrl;
@@ -26,6 +27,7 @@ class ActivityModel
         $m = new self;
 
         $m->id = $bean->id;
+        $m->challengeId = $bean->challenge_id;
         $m->userId = $bean->user_id;
         $m->fileId = $bean->file_id;
         $m->workoutUrl = $bean->workout_url;
