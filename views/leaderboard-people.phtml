@@ -1,7 +1,42 @@
 <?php
-$v->layout('dashboard', ['title' => 'People Leaderboard']);
+
+use App\Models\TotalsModel;
+
+$v->layout('dashboard', ['title' => 'People']);
 $v->push('card');
+
+/**
+ * @var TotalsModel[] $totals
+ */
+
+$i = 0;
 ?>
-    People
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Team</th>
+            <th scope="col">Distance</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Activities</th>
+            <th scope="col">Last Activity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($totals as $a) { ?>
+            <tr>
+                <td><strong><?= ++$i; ?></strong></td>
+                <td><?= htmlspecialchars($a->userName); ?></td>
+                <td><?= htmlspecialchars($a->teamName); ?></td>
+                <td><?= $a->getReadableDistance(); ?></td>
+                <td><?= $a->getReadableDuration(); ?></td>
+                <td><?= $a->activityCount; ?></td>
+                <td><?= $a->getReadableLastActivityAt(); ?></td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+
 <?php
 $v->end();

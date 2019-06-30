@@ -12,8 +12,11 @@ class TotalsModel
     /** @var int User or team ID */
     public $id;
 
-    /** @var string User or team name */
-    public $name;
+    /** @var string */
+    public $userName;
+
+    /** @var string */
+    public $teamName;
 
     public $distance;
 

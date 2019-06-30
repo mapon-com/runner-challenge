@@ -25,7 +25,7 @@ class Controller extends BaseController
 
         return $this->render('my-team', [
             'team' => $team,
-            'totals' => $this->teams->getUserTotals($team),
+            'totals' => $team ? $this->teams->getUserTotals($team) : [],
         ]);
     }
 
@@ -94,7 +94,9 @@ class Controller extends BaseController
 
     public function leaderboardPeople()
     {
-        return $this->render('leaderboard-people');
+        return $this->render('leaderboard-people', [
+            'totals' => $this->teams->getUserTotals(null),
+        ]);
     }
 
     public function logout()

@@ -26,10 +26,17 @@ use App\Models\UserModel;
         <div class="row">
             <div class="col">
                 <h2>
-                    Ready for the challenge?
-                    <a href="/logout" class="btn btn-secondary float-right btn-sm mt-1" role="button" aria-pressed="true">
+                    <a href="/">Ready for the challenge?</a>
+                    <a href="/logout" class="btn btn-secondary float-right btn-sm mt-1" role="button"
+                       aria-pressed="true">
                         Sign out
                     </a>
+                    <?php if ($user->isAdmin) { ?>
+                        <a href="/admin" class="btn btn-secondary float-right btn-sm mt-1" role="button"
+                           aria-pressed="true">
+                            Admin
+                        </a>
+                    <?php } ?>
                 </h2>
                 <hr>
             </div>

@@ -16,17 +16,19 @@ if ($team) { ?>
         <thead>
         <tr>
             <th scope="col">Name</th>
-            <th scope="col">Total Distance</th>
-            <th scope="col">Total Duration</th>
+            <th scope="col">Distance</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Activities</th>
             <th scope="col">Last Activity</th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($totals as $a) { ?>
             <tr>
-                <td><?= htmlspecialchars($a->name); ?></td>
+                <td><?= htmlspecialchars($a->userName); ?></td>
                 <td><?= $a->getReadableDistance(); ?></td>
                 <td><?= $a->getReadableDuration(); ?></td>
+                <td><?= $a->activityCount; ?></td>
                 <td><?= $a->getReadableLastActivityAt(); ?></td>
             </tr>
         <?php } ?>

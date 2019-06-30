@@ -126,29 +126,36 @@ class TeamService
      */
     public function getUserTotals(?TeamModel $team): array
     {
-        if (!$team) {
-            return [];
+        $where = '1';
+        $bindings = [];
+
+        if ($team) {
+            $where = 't.id = ?';
+            $bindings = [$team->id];
         }
 
-        $totalsRaw = R::getAll('
+        $totalsRaw = R::getAll("
             SELECT 
                    u.id, 
-                   u.name, 
+                   u.name AS user_name, 
+                   t.name AS team_name,
                    SUM(distance) AS total_distance, 
                    SUM(duration) AS total_duration, 
                    MAX(a.activity_at) AS last_activity_at,
                    COUNT(a.id) AS activity_count
             FROM users u
-            LEFT OUTER JOIN activities a ON u.id = a.user_id
-            WHERE u.team_id = ?
+            LEFT JOIN teams t ON t.id = u.team_id
+            LEFT JOIN activities a ON u.id = a.user_id
+            WHERE $where
             GROUP BY u.id
             ORDER BY total_distance DESC
-        ', [$team->id]);
+        ", $bindings);
 
         return array_map(function ($r) {
             $t = new TotalsModel;
             $t->id = (int)$r['id'];
-            $t->name = $r['name'];
+            $t->userName = $r['user_name'];
+            $t->teamName = $r['team_name'];
             $t->distance = (float)$r['total_distance'];
             $t->duration = (int)$r['total_duration'];
             $t->lastActivityAt = (int)$r['last_activity_at'];
