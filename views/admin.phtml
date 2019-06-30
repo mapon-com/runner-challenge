@@ -25,7 +25,7 @@ $v->layout('layout', ['title' => 'Admin']);
         <div class="card">
             <div class="card-header">
                 Teams
-                <form action="/admin/add-team" method="post" class="float-right">
+                <form action="<?=route('add-team');?>" method="post" class="float-right">
                     <button type="submit" class="btn btn-primary btn-sm">Create a team</button>
                 </form>
             </div>
@@ -37,7 +37,7 @@ $v->layout('layout', ['title' => 'Admin']);
                             <div class="card-header p-1 pl-2">
                                 <?= htmlspecialchars($team->name); ?>
                                 (<?= $team->getReadableDistance(); ?>)
-                                <form method="post" action="/admin/delete-team" class="float-right">
+                                <form method="post" action="<?=route('delete-team');?>" class="float-right">
                                     <input type="hidden" name="teamId" value="<?= $team->id; ?>">
                                     <button type="submit" class="btn btn-link btn-sm m-0 p-0 mr-2">&times;</button>
                                 </form>
@@ -54,7 +54,7 @@ $v->layout('layout', ['title' => 'Admin']);
                                             <li class="list-group-item p-0">
                                                 <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
                                                 <?= htmlspecialchars($u->name); ?>
-                                                <form method="post" action="/admin/unassign-team" class="float-right">
+                                                <form method="post" action="<?=route('unassign-team');?>" class="float-right">
                                                     <input type="hidden" name="userId" value="<?= $u->id; ?>">
                                                     <button type="submit" class="btn btn-secondary btn-sm m-0 p-0 mr-2">
                                                         &times;
@@ -85,7 +85,7 @@ $v->layout('layout', ['title' => 'Admin']);
                     ?><em class="text-muted">&ndash;</em><?php
                 } else {
                     ?>
-                    <form action="/admin/assign-team" method="post">
+                    <form action="<?=route('assign-team');?>" method="post">
                         <ul class="list-group list-group-flush">
                             <?php foreach ($teamlessUsers as $u) { ?>
                                 <li class="list-group-item p-1">
@@ -117,7 +117,7 @@ $v->layout('layout', ['title' => 'Admin']);
     </div>
 </div>
 
-<form class="invisible" method="post" action="/admin/impersonate" id="form-impersonate">
+<form class="invisible" method="post" action="<?=route('impersonate');?>" id="form-impersonate">
     <input type="hidden" name="userId" id="impersonate">
 </form>
 <script>

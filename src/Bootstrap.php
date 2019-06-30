@@ -2,39 +2,37 @@
 
 namespace App;
 
+use Dotenv\Dotenv;
+use Dotenv\Exception\InvalidPathException;
 use RedBeanPHP\R;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 class Bootstrap
 {
+    /** @var UrlGenerator */
+    public static $routeGenerator;
+
     public function run()
     {
         session_start();
 
-        $routes = new RouteCollection;
+        $this->loadEnv();
 
-        $routes->add('index', new Route('/', ['action' => 'index', 'public' => true]));
-        $routes->add('register', new Route('/register', ['action' => 'register', 'public' => true]));
+        require __DIR__ . '/functions.php';
 
-        $routes->add('board', new Route('/board', ['action' => 'board']));
-        $routes->add('logout', new Route('/logout', ['action' => 'logout']));
-        $routes->add('upload', new Route('/upload', ['action' => 'upload']));
-        $routes->add('team-leaderboard', new Route('/leaderboard/teams', ['action' => 'leaderboardTeams']));
-        $routes->add('people-leaderboard', new Route('/leaderboard/people', ['action' => 'leaderboardPeople']));
-        $routes->add('my-team', new Route('/my-team', ['action' => 'myTeam']));
+        /** @var RouteCollection $routes */
+        $routes = require __DIR__ . '/routes.php';
 
-        $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
-        $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
-        $routes->add('assign-team', new Route('/admin/assign-team', ['action' => 'assignTeam', 'admin' => true]));
-        $routes->add('unassign-team', new Route('/admin/unassign-team', ['action' => 'unassignTeam', 'admin' => true]));
-        $routes->add('delete-team', new Route('/admin/delete-team', ['action' => 'deleteTeam', 'admin' => true]));
-        $routes->add('impersonate', new Route('/admin/impersonate', ['action' => 'impersonate', 'admin' => true]));
+        $routes->addPrefix(ltrim(getenv('URL_PREFIX'), '/'));
 
-        $matcher = new UrlMatcher($routes, new RequestContext);
+        $routeContext = new RequestContext();
+        $matcher = new UrlMatcher($routes, $routeContext);
+
+        self::$routeGenerator = new UrlGenerator($routes, $routeContext);
 
         $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -47,5 +45,14 @@ class Bootstrap
         R::setup('sqlite:' . __DIR__ . '/../storage/database.sqlite');
 
         return (new Controller)->call($parameters);
+    }
+
+    private function loadEnv()
+    {
+        try {
+            Dotenv::create(__DIR__ . '/../', '.env')->load();
+        } catch (InvalidPathException $e) {
+            die('Environment file is not set.');
+        }
     }
 }

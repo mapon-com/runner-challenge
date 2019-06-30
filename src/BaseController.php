@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Models\ChallengeModel;
-use App\Models\UserModel;
 use App\Services\ActivityService;
 use App\Services\ChallengeService;
 use App\Services\TeamService;
@@ -73,10 +71,11 @@ abstract class BaseController
         return $templates->render(basename($view), $variables);
     }
 
-    protected function redirect($url, string $flashMessage = null)
+    protected function redirect($route, string $flashMessage = null)
     {
+        $url = route($route);
         $_SESSION['_flash'] = $flashMessage;
-        header("Location: /$url");
+        header("Location: $url");
         return "";
     }
 }

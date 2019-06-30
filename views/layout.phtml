@@ -26,19 +26,19 @@ use App\Models\UserModel;
         <div class="row">
             <div class="col">
                 <h2>
-                    <a href="/">Ready for the challenge?</a>
+                    <a href="<?=route('board');?>">Ready for the challenge?</a>
 
                     <div class="float-right mt-1">
                         <a class="btn btn-sm">
                             <em><?= htmlspecialchars($user->name); ?></em>
                         </a>
                         <?php if ($user->isAdmin) { ?>
-                            <a href="/admin" class="btn btn-secondary btn-sm" role="button"
+                            <a href="<?=route('admin');?>" class="btn btn-secondary btn-sm" role="button"
                                aria-pressed="true">
                                 Admin
                             </a>
                         <?php } ?>
-                        <a href="/logout" class="btn btn-secondary btn-sm" role="button"
+                        <a href="<?=route('logout');?>" class="btn btn-secondary btn-sm" role="button"
                            aria-pressed="true">
                             Sign out
                         </a>

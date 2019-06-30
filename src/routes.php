@@ -1,0 +1,25 @@
+<?php
+
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+
+$routes = new RouteCollection;
+
+$routes->add('index', new Route('/', ['action' => 'index', 'public' => true]));
+$routes->add('register', new Route('/register', ['action' => 'register', 'public' => true]));
+
+$routes->add('board', new Route('/board', ['action' => 'board']));
+$routes->add('logout', new Route('/logout', ['action' => 'logout']));
+$routes->add('upload', new Route('/upload', ['action' => 'upload']));
+$routes->add('team-leaderboard', new Route('/leaderboard/teams', ['action' => 'leaderboardTeams']));
+$routes->add('people-leaderboard', new Route('/leaderboard/people', ['action' => 'leaderboardPeople']));
+$routes->add('my-team', new Route('/my-team', ['action' => 'myTeam']));
+
+$routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
+$routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
+$routes->add('assign-team', new Route('/admin/assign-team', ['action' => 'assignTeam', 'admin' => true]));
+$routes->add('unassign-team', new Route('/admin/unassign-team', ['action' => 'unassignTeam', 'admin' => true]));
+$routes->add('delete-team', new Route('/admin/delete-team', ['action' => 'deleteTeam', 'admin' => true]));
+$routes->add('impersonate', new Route('/admin/impersonate', ['action' => 'impersonate', 'admin' => true]));
+
+return $routes;

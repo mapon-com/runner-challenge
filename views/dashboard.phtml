@@ -3,10 +3,10 @@
 <?php
 
 $links = [
-    '/board' => 'My Activities',
-    '/my-team' => 'My Team',
-    '/leaderboard/teams' => 'Teams',
-    '/leaderboard/people' => 'People',
+    'board' => 'My Activities',
+    'my-team' => 'My Team',
+    'team-leaderboard' => 'Teams',
+    'people-leaderboard' => 'People',
 ];
 
 ?>
@@ -17,7 +17,8 @@ $links = [
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs">
                     <?php
-                    foreach ($links as $url => $title) {
+                    foreach ($links as $route => $title) {
+                        $url = route($route);
                         $isActive = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === $url;
                         ?>
                         <li class="nav-item">
@@ -36,7 +37,7 @@ $links = [
         <div class="card">
             <div class="card-header"> Log an activity</div>
             <div class="card-body">
-                <form action="/upload" method="post" enctype="multipart/form-data" id="gpx-form">
+                <form action="<?=route('upload');?>" method="post" enctype="multipart/form-data" id="gpx-form">
                     <div class="form-group">
                         <label for="customFile">Activity file (GPX):</label>
                         <div class="custom-file">

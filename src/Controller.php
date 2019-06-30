@@ -104,7 +104,7 @@ class Controller extends BaseController
     public function logout()
     {
         $this->users->logOut();
-        return $this->redirect('');
+        return $this->redirect('register');
     }
 
     public function admin()
