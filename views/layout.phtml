@@ -27,16 +27,22 @@ use App\Models\UserModel;
             <div class="col">
                 <h2>
                     <a href="/">Ready for the challenge?</a>
-                    <a href="/logout" class="btn btn-secondary float-right btn-sm mt-1" role="button"
-                       aria-pressed="true">
-                        Sign out
-                    </a>
-                    <?php if ($user->isAdmin) { ?>
-                        <a href="/admin" class="btn btn-secondary float-right btn-sm mt-1" role="button"
-                           aria-pressed="true">
-                            Admin
+
+                    <div class="float-right mt-1">
+                        <a class="btn btn-sm">
+                            <em><?= htmlspecialchars($user->name); ?></em>
                         </a>
-                    <?php } ?>
+                        <?php if ($user->isAdmin) { ?>
+                            <a href="/admin" class="btn btn-secondary btn-sm" role="button"
+                               aria-pressed="true">
+                                Admin
+                            </a>
+                        <?php } ?>
+                        <a href="/logout" class="btn btn-secondary btn-sm" role="button"
+                           aria-pressed="true">
+                            Sign out
+                        </a>
+                    </div>
                 </h2>
                 <hr>
             </div>

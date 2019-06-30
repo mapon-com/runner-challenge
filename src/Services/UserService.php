@@ -60,7 +60,11 @@ class UserService
     {
         $id = $_SESSION['userId'] ?? null;
         if ($id) {
-            return $this->findById($id);
+            $user = $this->findById($id);
+            if (!empty($_SESSION['impersonator'])) {
+                $user->isImpersonating = true;
+            }
+            return $user;
         }
 
         return null;
@@ -68,6 +72,12 @@ class UserService
 
     public function logOut()
     {
+        $impersonatorUserId = $_SESSION['impersonator'] ?? null;
+        if ($impersonatorUserId) {
+            unset($_SESSION['impersonator']);
+            $_SESSION['userId'] = $impersonatorUserId;
+            return;
+        }
         unset($_SESSION['userId']);
     }
 
@@ -94,5 +104,17 @@ class UserService
             }
             return $carry;
         }, []);
+    }
+
+    public function impersonate(int $userId)
+    {
+        $current = $this->getLoggedIn();
+        $user = $this->findById($userId);
+
+        $this->logIn($user);
+
+        $_SESSION['impersonator'] = $current->id;
+
+        return $user;
     }
 }

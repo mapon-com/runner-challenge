@@ -121,17 +121,30 @@ class TeamService
     }
 
     /**
-     * @param TeamModel|null $team
      * @return TotalsModel[]
      */
-    public function getUserTotals(?TeamModel $team): array
+    public function getTeamTotals(): array
+    {
+        return $this->getUserTotals(null, true);
+    }
+
+    /**
+     * @param TeamModel|null $team
+     * @param bool $groupByTeam
+     * @return TotalsModel[]
+     */
+    public function getUserTotals(?TeamModel $team, bool $groupByTeam = false): array
     {
         $where = '1';
         $bindings = [];
+        $groupBy = 'u.id';
 
         if ($team) {
             $where = 't.id = ?';
             $bindings = [$team->id];
+        } elseif ($groupByTeam) {
+            $groupBy = 't.id';
+            $where = 'u.team_id IS NOT NULL';
         }
 
         $totalsRaw = R::getAll("
@@ -147,7 +160,7 @@ class TeamService
             LEFT JOIN teams t ON t.id = u.team_id
             LEFT JOIN activities a ON u.id = a.user_id
             WHERE $where
-            GROUP BY u.id
+            GROUP BY $groupBy
             ORDER BY total_distance DESC
         ", $bindings);
 

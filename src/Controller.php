@@ -89,7 +89,9 @@ class Controller extends BaseController
 
     public function leaderboardTeams()
     {
-        return $this->render('leaderboard-teams');
+        return $this->render('leaderboard-teams', [
+            'totals' => $this->teams->getTeamTotals(),
+        ]);
     }
 
     public function leaderboardPeople()
@@ -145,5 +147,11 @@ class Controller extends BaseController
         $team = $this->teams->getById($_POST['teamId']);
         $this->teams->deleteTeam($team);
         return $this->redirect('admin', 'Team has been delete');
+    }
+
+    public function impersonate()
+    {
+        $user = $this->users->impersonate($_POST['userId']);
+        return $this->redirect('board', 'You are now impersonating ' . htmlspecialchars($user->name));
     }
 }

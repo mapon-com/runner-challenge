@@ -15,6 +15,9 @@ class UserModel
     public $name;
     public $isAdmin;
 
+    /** @var bool Is currently impersonating this user */
+    public $isImpersonating;
+
     public static function fromBean(?OODBBean $bean): UserModel
     {
         $m = new self;
