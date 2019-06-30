@@ -31,6 +31,10 @@ class Controller extends BaseController
 
     public function upload()
     {
+        if (!$this->activities->canUpload()) {
+            return $this->redirect('board', 'Activities cannot be logged at this moment');
+        }
+
         try {
             $this->activities->upload(
                 $this->user,
@@ -153,5 +157,11 @@ class Controller extends BaseController
     {
         $user = $this->users->impersonate($_POST['userId']);
         return $this->redirect('board', 'You are now impersonating ' . htmlspecialchars($user->name));
+    }
+
+    public function enableUpload()
+    {
+        $this->activities->setUpload((bool)$_POST['canUpload']);
+        return $this->redirect('admin');
     }
 }

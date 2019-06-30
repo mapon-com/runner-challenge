@@ -81,4 +81,25 @@ class ActivityService
             return ActivityModel::fromBean($bean);
         }, $beans);
     }
+
+    /**
+     * Is uploading enabled
+     *
+     * @return bool
+     */
+    public function canUpload(): bool
+    {
+        return (new SettingsService)->get('can_upload', false);
+    }
+
+    /**
+     * Enable / Disable uploading
+     * @param bool $canUpload
+     * @return bool
+     */
+    public function setUpload(bool $canUpload)
+    {
+        return (new SettingsService)->set('can_upload', $canUpload);
+    }
+
 }

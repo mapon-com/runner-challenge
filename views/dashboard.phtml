@@ -1,6 +1,9 @@
 <?php $v->layout('layout', ['title' => $title]) ?>
 
 <?php
+/**
+ * @var bool $canUpload Is uploading enabled
+ */
 
 $links = [
     'board' => 'My Activities',
@@ -37,7 +40,7 @@ $links = [
         <div class="card">
             <div class="card-header"> Log an activity</div>
             <div class="card-body">
-                <form action="<?=route('upload');?>" method="post" enctype="multipart/form-data" id="gpx-form">
+                <form action="<?= route('upload'); ?>" method="post" enctype="multipart/form-data" id="gpx-form">
                     <div class="form-group">
                         <label for="customFile">Activity file (GPX):</label>
                         <div class="custom-file">
@@ -64,9 +67,15 @@ $links = [
                         <input type="text" class="form-control" name="comment" id="comment">
                         <small class="form-text text-muted">Others will see this, make it motivational!</small>
                     </div>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-success">Upload</button>
-                    </div>
+                    <?php if ($canUpload) { ?>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success">Upload</button>
+                        </div>
+                    <?php } else { ?>
+                        <div class="alert alert-danger p-2 text-center mb-0">
+                            <small>Activities cannot be logged at this moment!</small>
+                        </div>
+                    <?php } ?>
                 </form>
                 <script>
                     document.getElementById('customFile').onchange = function () {

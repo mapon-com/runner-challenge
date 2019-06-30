@@ -6,6 +6,7 @@ use App\Models\UserModel;
 /**
  * @var TeamModel[] $teams
  * @var UserModel[] $users
+ * @var bool $canUpload
  */
 
 /**
@@ -25,7 +26,7 @@ $v->layout('layout', ['title' => 'Admin']);
         <div class="card">
             <div class="card-header">
                 Teams
-                <form action="<?=route('add-team');?>" method="post" class="float-right">
+                <form action="<?= route('add-team'); ?>" method="post" class="float-right">
                     <button type="submit" class="btn btn-primary btn-sm">Create a team</button>
                 </form>
             </div>
@@ -37,7 +38,7 @@ $v->layout('layout', ['title' => 'Admin']);
                             <div class="card-header p-1 pl-2">
                                 <?= htmlspecialchars($team->name); ?>
                                 (<?= $team->getReadableDistance(); ?>)
-                                <form method="post" action="<?=route('delete-team');?>" class="float-right">
+                                <form method="post" action="<?= route('delete-team'); ?>" class="float-right">
                                     <input type="hidden" name="teamId" value="<?= $team->id; ?>">
                                     <button type="submit" class="btn btn-link btn-sm m-0 p-0 mr-2">&times;</button>
                                 </form>
@@ -54,7 +55,8 @@ $v->layout('layout', ['title' => 'Admin']);
                                             <li class="list-group-item p-0">
                                                 <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
                                                 <?= htmlspecialchars($u->name); ?>
-                                                <form method="post" action="<?=route('unassign-team');?>" class="float-right">
+                                                <form method="post" action="<?= route('unassign-team'); ?>"
+                                                      class="float-right">
                                                     <input type="hidden" name="userId" value="<?= $u->id; ?>">
                                                     <button type="submit" class="btn btn-secondary btn-sm m-0 p-0 mr-2">
                                                         &times;
@@ -76,6 +78,22 @@ $v->layout('layout', ['title' => 'Admin']);
     </div>
 
     <div class="col-3">
+        <div class="card <?= ($canUpload ? 'bg-success' : 'bg-danger'); ?> text-white mb-3">
+            <div class="card-header">Activity upload</div>
+            <div class="card-body">
+                <form method="post" action="<?= route('enable-upload'); ?>">
+                    <input type="hidden" name="canUpload" value="<?= ((int)!$canUpload); ?>">
+                    <?php if ($canUpload) { ?>
+                        <p>Activity upload is enabled.</p>
+                        <button type="submit" class="btn p-1 btn-danger btn-block">Disable upload</button>
+                    <?php } else { ?>
+                        <p>Activity upload is disabled.</p>
+                        <button type="submit" class="btn p-1 btn-success btn-block">Enable upload</button>
+                    <?php } ?>
+                </form>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-header">People without teams</div>
             <div class="card-body">
@@ -85,7 +103,7 @@ $v->layout('layout', ['title' => 'Admin']);
                     ?><em class="text-muted">&ndash;</em><?php
                 } else {
                     ?>
-                    <form action="<?=route('assign-team');?>" method="post">
+                    <form action="<?= route('assign-team'); ?>" method="post">
                         <ul class="list-group list-group-flush">
                             <?php foreach ($teamlessUsers as $u) { ?>
                                 <li class="list-group-item p-1">
@@ -117,7 +135,7 @@ $v->layout('layout', ['title' => 'Admin']);
     </div>
 </div>
 
-<form class="invisible" method="post" action="<?=route('impersonate');?>" id="form-impersonate">
+<form class="invisible" method="post" action="<?= route('impersonate'); ?>" id="form-impersonate">
     <input type="hidden" name="userId" id="impersonate">
 </form>
 <script>

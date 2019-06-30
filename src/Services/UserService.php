@@ -10,6 +10,8 @@ class UserService
 {
     public function register($email, $password, $name): UserModel
     {
+        $email = trim(mb_strtolower($email));
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !$password || !$name) {
             throw new InvalidArgumentException('Bad email, password or name.');
         }
@@ -18,12 +20,15 @@ class UserService
             throw new InvalidArgumentException('Email already registered');
         }
 
+        $shouldBeAdmin = in_array($email, explode(',', getenv('ADMIN_EMAILS')), true);
+
         $user = new UserModel;
 
         $user->email = $email;
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->name = trim($name);
-        $user->isAdmin = 0;
+        $user->isAdmin = $shouldBeAdmin;
+
         $user->save();
 
         return $user;

@@ -21,5 +21,6 @@ $routes->add('assign-team', new Route('/admin/assign-team', ['action' => 'assign
 $routes->add('unassign-team', new Route('/admin/unassign-team', ['action' => 'unassignTeam', 'admin' => true]));
 $routes->add('delete-team', new Route('/admin/delete-team', ['action' => 'deleteTeam', 'admin' => true]));
 $routes->add('impersonate', new Route('/admin/impersonate', ['action' => 'impersonate', 'admin' => true]));
+$routes->add('enable-upload', new Route('/admin/enable-upload', ['action' => 'enableUpload', 'admin' => true]));
 
 return $routes;

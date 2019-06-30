@@ -9,7 +9,8 @@
         "league/plates": "v4.0.0-alpha",
         "duckfusion/waddle": "dev-master",
         "ext-mbstring": "*",
-        "nesbot/carbon": "^2.20"
+        "nesbot/carbon": "^2.20",
+        "ext-json": "*"
     },
     "authors": [
         {
