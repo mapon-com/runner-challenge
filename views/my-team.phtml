@@ -1,0 +1,40 @@
+<?php
+
+use App\Models\TeamModel;
+use App\Models\TotalsModel;
+
+$v->layout('dashboard', ['title' => 'My Team']);
+$v->push('card');
+
+/**
+ * @var TeamModel|null $team
+ * @var TotalsModel[] $totals
+ */
+
+if ($team) { ?>
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Total Distance</th>
+            <th scope="col">Total Duration</th>
+            <th scope="col">Last Activity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($totals as $a) { ?>
+            <tr>
+                <td><?= htmlspecialchars($a->name); ?></td>
+                <td><?= $a->getReadableDistance(); ?></td>
+                <td><?= $a->getReadableDuration(); ?></td>
+                <td><?= $a->getReadableLastActivityAt(); ?></td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } else { ?>
+    <h5 class="card-title">You are not in a team</h5>
+    <p class="card-text">You will be assigned to a team soon, don't worry!</p>
+    <?php
+}
+$v->end();

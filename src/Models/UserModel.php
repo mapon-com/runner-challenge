@@ -10,6 +10,7 @@ class UserModel
     public $id;
     public $password;
     public $email;
+    /** @var ?int */
     public $teamId;
     public $name;
     public $isAdmin;
@@ -25,7 +26,7 @@ class UserModel
         $m->id = $bean->id;
         $m->password = $bean->password;
         $m->email = $bean->email;
-        $m->teamId = $bean->team_id;
+        $m->teamId = ((int)$bean->team_id) ?: null;
         $m->name = $bean->name;
         $m->isAdmin = (bool)$bean->is_admin;
 

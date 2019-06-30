@@ -19,6 +19,16 @@ class Controller extends BaseController
         ]);
     }
 
+    public function myTeam()
+    {
+        $team = $this->teams->getById($this->user->teamId);
+
+        return $this->render('my-team', [
+            'team' => $team,
+            'totals' => $this->teams->getUserTotals($team),
+        ]);
+    }
+
     public function upload()
     {
         try {
