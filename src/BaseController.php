@@ -19,6 +19,9 @@ abstract class BaseController
     /** @var ?UserModel */
     protected $user;
 
+    /** @var ?TeamModel */
+    protected $team;
+
     /** @var ?ChallengeModel Current challenge */
     protected $challenge;
 
@@ -39,6 +42,7 @@ abstract class BaseController
         $this->teams = new TeamService;
         $this->challenges = new ChallengeService;
         $this->challenge = $this->challenges->getCurrent();
+        $this->team = $this->user->teamId ? $this->teams->getById($this->user->teamId) : null;
 
         $this->flash = $_SESSION['_flash'] ?? null;
         unset($_SESSION['_flash']);

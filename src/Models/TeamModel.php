@@ -74,4 +74,12 @@ class TeamModel
     {
         return round($this->totalDistance / 1000, 2) . ' km';
     }
+
+    public function getImageUrl(): ?string
+    {
+        if ($this->imageId) {
+            return route('image') . '?id=' . $this->imageId;
+        }
+        return null;
+    }
 }

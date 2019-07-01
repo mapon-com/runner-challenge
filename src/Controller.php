@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\ImageService;
 use App\Services\TextService;
 use App\Services\UserService;
 use InvalidArgumentException;
@@ -48,12 +49,18 @@ class Controller extends BaseController
             return $this->redirect('board', 'No active challenges.');
         }
 
+        $gpxPathname = $_FILES['gpx']['tmp_name'];
+
+        if (!is_uploaded_file($gpxPathname)) {
+            return $this->redirect('board', 'Bad file selected');
+        }
+
         try {
             $this->activities->upload(
                 $this->user,
                 $this->challenge,
                 $_FILES['gpx']['name'],
-                $_FILES['gpx']['tmp_name'],
+                $gpxPathname,
                 $_POST['activityUrl'],
                 $_POST['comment']
             );
@@ -66,6 +73,40 @@ class Controller extends BaseController
         }
 
         return $this->redirect('board', 'Activity logged!');
+    }
+
+    public function editTeam()
+    {
+        if (!$this->team) {
+            return $this->redirect('board', 'You are not in a team!');
+        }
+
+        $imagePathname = $_FILES['image'] ? $_FILES['image']['tmp_name'] : null;
+        if (!is_uploaded_file($imagePathname)) {
+            $imagePathname = null;
+        }
+
+        $newName = $_POST['teamName'] ?? '';
+
+        try {
+            $this->teams->editTeam($this->team, $newName, $imagePathname);
+        } catch (InvalidArgumentException $e) {
+            return $this->redirect('my-team', $e->getMessage());
+        }
+
+        return $this->redirect('my-team', 'Team information updated');
+    }
+
+    public function image()
+    {
+        $imageId = $_GET['id'] ?? 0;
+        $content = (new ImageService)->getImageContent($imageId);
+
+        header('Cache-Control: public, max-age=31536000');
+        header('Content-Type: image/png');
+        header('Content-Length: ' . strlen($content));
+
+        return $content;
     }
 
     public function register()

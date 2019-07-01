@@ -176,4 +176,31 @@ class TeamService
             return $t;
         }, $totalsRaw);
     }
+
+    /**
+     * @param TeamModel $team
+     * @param $newName
+     * @param $imagePathname
+     */
+    public function editTeam(TeamModel $team, string $newName, ?string $imagePathname)
+    {
+        $team->name = mb_substr(trim($newName), 0, 40) ?: 'Unnamed';
+        $team->save();
+
+        if ($imagePathname) {
+            $this->uploadImage($team, $imagePathname);
+        }
+    }
+
+    private function uploadImage(TeamModel $team, ?string $pathname)
+    {
+        if (!$pathname) {
+            return;
+        }
+
+        $imageId = (new ImageService)->create($pathname);
+
+        $team->imageId = $imageId;
+        $team->save();
+    }
 }

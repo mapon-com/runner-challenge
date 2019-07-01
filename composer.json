@@ -12,7 +12,8 @@
         "nesbot/carbon": "^2.20",
         "ext-json": "*",
         "michelf/php-markdown": "^1.8",
-        "ezyang/htmlpurifier": "^4.10"
+        "ezyang/htmlpurifier": "^4.10",
+        "intervention/image": "^2.5"
     },
     "authors": [
         {

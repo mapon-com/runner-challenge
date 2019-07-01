@@ -7,6 +7,7 @@ $routes = new RouteCollection;
 
 $routes->add('index', new Route('/', ['action' => 'index', 'public' => true]));
 $routes->add('register', new Route('/register', ['action' => 'register', 'public' => true]));
+$routes->add('image', new Route('/image', ['action' => 'image', 'public' => true]));
 
 $routes->add('board', new Route('/board', ['action' => 'board']));
 $routes->add('logout', new Route('/logout', ['action' => 'logout']));
@@ -15,6 +16,7 @@ $routes->add('team-leaderboard', new Route('teams', ['action' => 'leaderboardTea
 $routes->add('people-leaderboard', new Route('people', ['action' => 'leaderboardPeople']));
 $routes->add('my-team', new Route('/my-team', ['action' => 'myTeam']));
 $routes->add('rules', new Route('/rules', ['action' => 'rules']));
+$routes->add('edit-team', new Route('/edit-team', ['action' => 'editTeam']));
 
 $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
 $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
