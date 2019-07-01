@@ -67,7 +67,7 @@ class Controller extends BaseController
 
         $users = new UserService;
 
-        $email = $_POST['email'] ?? '';
+        $email = trim(strtolower($_POST['email'] ?? ''));
         $password = $_POST['password'] ?? '';
         $name = $_POST['name'] ?? '';
 
