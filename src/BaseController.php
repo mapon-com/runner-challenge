@@ -42,7 +42,10 @@ abstract class BaseController
         $this->teams = new TeamService;
         $this->challenges = new ChallengeService;
         $this->challenge = $this->challenges->getCurrent();
-        $this->team = $this->user->teamId ? $this->teams->getById($this->user->teamId) : null;
+
+        if ($this->user && $this->user->teamId) {
+            $this->team = $this->teams->getById($this->user->teamId);
+        }
 
         $this->flash = $_SESSION['_flash'] ?? null;
         unset($_SESSION['_flash']);
