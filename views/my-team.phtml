@@ -51,9 +51,12 @@ if ($team) {
                 <div class="col-4">
                     <div class="card">
                         <div class="card-body text-center p-1 pt-2">
-                            <h4 class="card-title" style="text-transform: none;"><?= htmlspecialchars($team->name); ?></h4>
+                            <h4 class="card-title"
+                                style="text-transform: none;"><?= htmlspecialchars($team->name); ?></h4>
                         </div>
-                        <img class="card-img-top" src="<?= htmlspecialchars($team->getImageUrl()); ?>" alt="">
+                        <?php if ($team->imageId) { ?>
+                            <img class="card-img-top" src="<?= htmlspecialchars($team->getImageUrl()); ?>" alt="">
+                        <?php } ?>
                     </div>
                 </div>
                 <div class="col">
