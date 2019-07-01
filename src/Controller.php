@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\TextService;
 use App\Services\UserService;
 use InvalidArgumentException;
 
@@ -18,6 +19,14 @@ class Controller extends BaseController
             'activities' => $this->activities->getActivities($this->user),
         ]);
     }
+
+    public function rules()
+    {
+        return $this->render('rules', [
+            'rules' => (new TextService)->getRulesHtml(),
+        ]);
+    }
+
 
     public function myTeam()
     {
@@ -121,6 +130,7 @@ class Controller extends BaseController
         return $this->render('admin', [
             'teams' => $this->teams->getAll($this->challenge),
             'users' => $this->users->getAll(),
+            'rules' => (new TextService)->getRules(),
         ]);
     }
 
@@ -168,5 +178,11 @@ class Controller extends BaseController
     {
         $this->activities->setUpload((bool)$_POST['canUpload']);
         return $this->redirect('admin');
+    }
+
+    public function editRules()
+    {
+        (new TextService)->setRules($_POST['html'] ?? '');
+        return $this->redirect('admin', 'Rules saved');
     }
 }

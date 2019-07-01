@@ -7,6 +7,7 @@ use App\Models\UserModel;
  * @var TeamModel[] $teams
  * @var UserModel[] $users
  * @var bool $canUpload
+ * @var string $rules
  */
 
 /**
@@ -23,7 +24,7 @@ $v->layout('layout', ['title' => 'Admin']);
 ?>
 <div class="row">
     <div class="col">
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-header">
                 Teams
                 <form action="<?= route('add-team'); ?>" method="post" class="float-right">
@@ -31,7 +32,6 @@ $v->layout('layout', ['title' => 'Admin']);
                 </form>
             </div>
             <div class="card-body">
-
                 <div class="card-columns">
                     <?php foreach ($teams as $team) { ?>
                         <div class="card">
@@ -73,6 +73,28 @@ $v->layout('layout', ['title' => 'Admin']);
                     <?php } ?>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Rules</div>
+            <div class="card-body">
+                <form action="<?= route('edit-rules'); ?>" method="post">
+                    <div class="form-group">
+                        <label for="rules">
+                            Rules (<a href="https://www.markdownguide.org/basic-syntax/"
+                                      target="_blank" rel="nofollow noopener">markdown syntax</a>):
+                        </label>
+                        <textarea id="rules" name="html" class="form-control p-3 text-monospace"
+                        ><?= htmlspecialchars($rules); ?></textarea>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    </div>
+                    <script>
+                        autosize(document.getElementById('rules'));
+                    </script>
+                </form>
             </div>
         </div>
     </div>

@@ -10,7 +10,9 @@
         "duckfusion/waddle": "dev-master",
         "ext-mbstring": "*",
         "nesbot/carbon": "^2.20",
-        "ext-json": "*"
+        "ext-json": "*",
+        "michelf/php-markdown": "^1.8",
+        "ezyang/htmlpurifier": "^4.10"
     },
     "authors": [
         {
