@@ -6,24 +6,22 @@
         <h2>Registration</h2>
         <form method="post" action="<?= route('register'); ?>">
             <div class="form-group">
-                <label for="email">Email</label>
+                <label for="email">Email:</label>
                 <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp"
-                       placeholder="Enter email">
-                <small id="emailHelp" class="form-text text-muted">Place where all the JIRA tasks end up</small>
+                       placeholder="Email">
+                <small id="emailHelp" class="form-text text-muted">Won't be shown to others.</small>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="password">Password:</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Password">
-                <small class="form-text text-muted">Sure, you can use the same password as for your PayPal
-                    account.</small>
             </div>
             <div class="form-group">
-                <label for="name">Your name (when registering)</label>
+                <label for="name">Your name (if you here the first time):</label>
                 <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp"
-                       placeholder="Enter your name">
-                <small class="form-text text-muted">What did your parents call you?</small>
+                       placeholder="Your name">
+                <small class="form-text text-muted">Will be visible to others.</small>
             </div>
-            <button type="submit" class="btn btn-danger">Sign In or Register</button>
+            <button type="submit" class="btn btn-success btn-block">Sign In or Register</button>
         </form>
     </div>
     <div class="col"></div>
