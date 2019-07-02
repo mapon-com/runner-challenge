@@ -44,7 +44,7 @@ $v->layout('layout', ['title' => 'Admin']);
                                 (<?= $team->getReadableDistance(); ?>)
                                 <form method="post" action="<?= route('delete-team'); ?>" class="float-right">
                                     <input type="hidden" name="teamId" value="<?= $team->id; ?>">
-                                    <button type="submit" class="btn btn-link btn-sm m-0 p-0 mr-2">&times;</button>
+                                    <button type="submit" class="btn btn-link btn-sm m-0 p-0 mr-2">❌</button>
                                 </form>
                             </div>
                             <div class="card-body p-1 pl-2">
@@ -65,7 +65,7 @@ $v->layout('layout', ['title' => 'Admin']);
                                                       class="float-right">
                                                     <input type="hidden" name="userId" value="<?= $u->id; ?>">
                                                     <button type="submit" class="btn btn-secondary btn-sm m-0 p-0 mr-2">
-                                                        &times;
+                                                        ❌
                                                     </button>
                                                 </form>
                                             </li>
