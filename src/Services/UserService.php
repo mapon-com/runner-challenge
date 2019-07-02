@@ -35,6 +35,15 @@ class UserService
         return $user;
     }
 
+    public function findUserByResetKey(?string $resetKey): ?UserModel
+    {
+        if (!$resetKey) {
+            return null;
+        }
+        $bean = R::findOne('users', 'password_reset_key = ?', [$resetKey]);
+        return $bean ? UserModel::fromBean($bean) : null;
+    }
+
     public function findUser($email): ?UserModel
     {
         $bean = R::findOne('users', 'email = ?', [$email]);

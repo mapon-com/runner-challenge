@@ -115,23 +115,23 @@ class Controller extends BaseController
             return $this->redirect('board');
         }
 
-        $users = new UserService;
-
+        $resetKey = $_POST['resetKey'] ?? $_GET['resetKey'] ?? '';
         $email = trim(strtolower($_POST['email'] ?? ''));
         $password = $_POST['password'] ?? '';
         $name = $_POST['name'] ?? '';
 
+        $user = $resetKey ? $this->users->findUserByResetKey($resetKey) : $this->users->findUser($email);
+
         if (!$email || !$password) {
             return $this->render('register', [
-                'resetKey' => $_GET['resetKey'] ?? '',
+                'resetKey' => $resetKey,
+                'email' => $user ? $user->email : '',
             ]);
         }
 
-        $user = $users->findUser($email);
-
         if ($user) {
             try {
-                $this->users->attemptLogIn($email, $password, $_POST['resetKey'] ?? null);
+                $this->users->attemptLogIn($email, $password, $resetKey);
             } catch (InvalidArgumentException $e) {
                 return $this->redirect('register', $e->getMessage());
             }
@@ -140,11 +140,10 @@ class Controller extends BaseController
 
         try {
             $user = $this->users->register($email, $password, $name);
+            $this->users->logIn($user);
         } catch (InvalidArgumentException $e) {
             return $this->redirect('register', $e->getMessage());
         }
-
-        $this->users->logIn($user);
 
         return $this->redirect('board', 'Successfully registered!');
     }
