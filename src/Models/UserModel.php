@@ -14,6 +14,8 @@ class UserModel
     public $teamId;
     public $name;
     public $isAdmin;
+    /** @var bool */
+    public $isParticipating;
 
     /** @var bool Is currently impersonating this user */
     public $isImpersonating;
@@ -32,6 +34,7 @@ class UserModel
         $m->teamId = ((int)$bean->team_id) ?: null;
         $m->name = $bean->name;
         $m->isAdmin = (bool)$bean->is_admin;
+        $m->isParticipating = (bool)$bean->is_participating;
 
         return $m;
     }
@@ -67,6 +70,7 @@ class UserModel
         $bean->team_id = $this->teamId;
         $bean->name = $this->name;
         $bean->is_admin = (int)$this->isAdmin;
+        $bean->is_participating = (bool)$this->isParticipating;
 
         R::store($bean);
 

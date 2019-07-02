@@ -28,6 +28,7 @@ class UserService
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->name = trim($name);
         $user->isAdmin = $shouldBeAdmin;
+        $user->isParticipating = true;
 
         $user->save();
 
@@ -121,5 +122,21 @@ class UserService
         $_SESSION['impersonator'] = $current->id;
 
         return $user;
+    }
+
+    public function setParticipating(int $userId, bool $isParticipating): bool
+    {
+        $user = $this->findById($userId);
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->teamId) {
+            throw new InvalidArgumentException('Cannot change participation because in a team');
+        }
+
+        $user->isParticipating = $isParticipating;
+        $user->save();
+        return true;
     }
 }

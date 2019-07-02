@@ -26,5 +26,6 @@ $routes->add('delete-team', new Route('/admin/delete-team', ['action' => 'delete
 $routes->add('impersonate', new Route('/admin/impersonate', ['action' => 'impersonate', 'admin' => true]));
 $routes->add('enable-upload', new Route('/admin/enable-upload', ['action' => 'enableUpload', 'admin' => true]));
 $routes->add('edit-rules', new Route('/admin/edit-rules', ['action' => 'editRules', 'admin' => true]));
+$routes->add('set-participating', new Route('/admin/set-participating', ['action' => 'setParticipating', 'admin' => true]));
 
 return $routes;

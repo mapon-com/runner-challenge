@@ -12,10 +12,14 @@ use App\Models\UserModel;
 
 /**
  * @param TeamModel $team
+ * @param bool|null $isParticipating null - ignore, true/false for participation status
  * @return UserModel[]
  */
-$findUsers = function (TeamModel $team) use (&$users) {
-    return array_filter($users, function (UserModel $user) use ($team) {
+$findUsers = function (TeamModel $team, ?bool $isParticipating) use (&$users) {
+    return array_filter($users, function (UserModel $user) use ($team, $isParticipating) {
+        if ($isParticipating !== null && $user->isParticipating !== $isParticipating) {
+            return false;
+        }
         return $user->teamId == $team->id;
     });
 };
@@ -45,7 +49,7 @@ $v->layout('layout', ['title' => 'Admin']);
                             </div>
                             <div class="card-body p-1 pl-2">
                                 <?php
-                                $teamUsers = $findUsers($team);
+                                $teamUsers = $findUsers($team, null);
                                 if (!$teamUsers) {
                                     ?><em class="text-muted">&ndash;</em><?php
                                 } else {
@@ -53,8 +57,10 @@ $v->layout('layout', ['title' => 'Admin']);
                                     <ul class="list-group list-group-flush">
                                         <?php foreach ($teamUsers as $u) { ?>
                                             <li class="list-group-item p-0">
+                                                <span title="<?= htmlspecialchars($u->email); ?>">
+                                                    <?= htmlspecialchars($u->name); ?>
+                                                </span>
                                                 <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
-                                                <?= htmlspecialchars($u->name); ?>
                                                 <form method="post" action="<?= route('unassign-team'); ?>"
                                                       class="float-right">
                                                     <input type="hidden" name="userId" value="<?= $u->id; ?>">
@@ -116,11 +122,11 @@ $v->layout('layout', ['title' => 'Admin']);
             </div>
         </div>
 
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-header">People without teams</div>
             <div class="card-body">
                 <?php
-                $teamlessUsers = $findUsers(new TeamModel);
+                $teamlessUsers = $findUsers(new TeamModel, true);
                 if (!$teamlessUsers) {
                     ?><em class="text-muted">&ndash;</em><?php
                 } else {
@@ -133,8 +139,11 @@ $v->layout('layout', ['title' => 'Admin']);
                                         <input type="checkbox" class="custom-control-input" name="userIds[]"
                                                id="user<?= $u->id; ?>" value="<?= $u->id; ?>">
                                         <label class="custom-control-label d-block" for="user<?= $u->id; ?>">
+                                            <span title="<?= htmlspecialchars($u->email); ?>">
+                                                <?= htmlspecialchars($u->name); ?>
+                                            </span>
                                             <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
-                                            <?= htmlspecialchars($u->name); ?>
+                                            <a href="javascript:" class="participating" data-id="<?= $u->id; ?>"></a>
                                         </label>
                                     </div>
                                 </li>
@@ -154,22 +163,79 @@ $v->layout('layout', ['title' => 'Admin']);
                 ?>
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-header">People not participating</div>
+            <div class="card-body">
+                <?php
+                $notParticipating = $findUsers(new TeamModel, false);
+                if (!$notParticipating) {
+                    ?><em class="text-muted">&ndash;</em><?php
+                } else {
+                    ?>
+                    <form action="<?= route('set-participating'); ?>" method="post">
+                        <input type="hidden" name="isParticipating" value="1">
+                        <ul class="list-group list-group-flush">
+                            <?php foreach ($notParticipating as $u) { ?>
+                                <li class="list-group-item p-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="userIds[]"
+                                               id="user<?= $u->id; ?>" value="<?= $u->id; ?>">
+                                        <label class="custom-control-label d-block" for="user<?= $u->id; ?>">
+                                            <span title="<?= htmlspecialchars($u->email); ?>">
+                                                <?= htmlspecialchars($u->name); ?>
+                                            </span>
+                                            <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
+                                        </label>
+                                    </div>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                        <button type="submit" class="btn btn-primary btn-sm btn-block mt-2">
+                            Set as participating
+                        </button>
+                    </form>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
     </div>
 </div>
 
 <form class="invisible" method="post" action="<?= route('impersonate'); ?>" id="form-impersonate">
     <input type="hidden" name="userId" id="impersonate">
 </form>
+
+<form class="invisible" method="post" action="<?= route('set-participating'); ?>" id="form-participating">
+    <input type="hidden" name="userIds[]" value="0" id="set-participating">
+    <input type="hidden" name="isParticipating" value="0">
+</form>
+
 <script>
     document.querySelectorAll('a.impersonate').forEach(function (a) {
-        a.className += ' btn btn-link btn-sm p-0 m-0 mr-1';
-        a.innerHTML = '&larr;';
+        a.className += ' btn btn-link btn-sm p-0 m-0 ml-1';
+        a.innerHTML = '🔑';
         a.title = 'Impersonate';
+        a.style.textDecoration = 'none';
+
         a.addEventListener('click', function (event) {
             if (confirm('Impersonate?')) {
                 document.getElementById('impersonate').value = event.target.dataset.id;
                 document.getElementById('form-impersonate').submit();
             }
+        });
+    });
+
+    document.querySelectorAll('a.participating').forEach(function (a) {
+        a.className += ' btn btn-link btn-sm p-0 m-0 ml-1';
+        a.innerHTML = '🛑';
+        a.title = 'Set as not participating';
+        a.style.textDecoration = 'none';
+
+        a.addEventListener('click', function (event) {
+            document.getElementById('set-participating').value = event.target.dataset.id;
+            document.getElementById('form-participating').submit();
         });
     });
 </script>

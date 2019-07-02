@@ -226,4 +226,17 @@ class Controller extends BaseController
         (new TextService)->setRules($_POST['html'] ?? '');
         return $this->redirect('admin', 'Rules saved');
     }
+
+    public function setParticipating()
+    {
+        try {
+            foreach ($_POST['userIds'] as $userId) {
+                (new UserService)->setParticipating($userId, (bool)$_POST['isParticipating']);
+            }
+        } catch (InvalidArgumentException $e) {
+            return $this->redirect('admin', $e->getMessage());
+        }
+
+        return $this->redirect('admin', 'Participation status changed');
+    }
 }
