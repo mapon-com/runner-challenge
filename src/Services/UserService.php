@@ -25,7 +25,7 @@ class UserService
         $user = new UserModel;
 
         $user->email = $email;
-        $user->password = password_hash($password, PASSWORD_DEFAULT);
+        $user->setPassword($password);
         $user->name = trim($name);
         $user->isAdmin = $shouldBeAdmin;
         $user->isParticipating = true;
@@ -55,6 +55,29 @@ class UserService
         }
 
         return null;
+    }
+
+    public function attemptLogIn(string $email, string $password, ?string $resetKey)
+    {
+        $user = $this->findUser($email);
+
+        if ($resetKey) {
+            if ($user->passwordResetKey !== $resetKey) {
+                throw new InvalidArgumentException('Reset key is not valid');
+            }
+            $user->setPassword($password);
+            $user->passwordResetKey = null;
+            $user->save();
+            $this->logIn($user);
+            return true;
+        }
+
+        if ($user->passwordMatches($password)) {
+            $this->logIn($user);
+            return true;
+        }
+
+        throw new InvalidArgumentException('Password does not match');
     }
 
     public function logIn(UserModel $user)
@@ -138,5 +161,23 @@ class UserService
         $user->isParticipating = $isParticipating;
         $user->save();
         return true;
+    }
+
+    /**
+     * @param int $userId
+     * @return string Password reset URL
+     */
+    public function resetPassword(int $userId): string
+    {
+        $user = $this->findById($userId);
+
+        if (!$user) {
+            return false;
+        }
+
+        $user->passwordResetKey = md5(uniqid('', true));
+        $user->save();
+
+        return $user->getPasswordResetUrl();
     }
 }

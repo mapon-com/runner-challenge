@@ -61,6 +61,7 @@ $v->layout('layout', ['title' => 'Admin']);
                                                     <?= htmlspecialchars($u->name); ?>
                                                 </span>
                                                 <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
+                                                <a href="javascript:" class="password" data-id="<?= $u->id; ?>"></a>
                                                 <form method="post" action="<?= route('unassign-team'); ?>"
                                                       class="float-right">
                                                     <input type="hidden" name="userId" value="<?= $u->id; ?>">
@@ -124,7 +125,7 @@ $v->layout('layout', ['title' => 'Admin']);
 
         <div class="card mb-3">
             <div class="card-header">People without teams</div>
-            <div class="card-body">
+            <div class="card-body p-1">
                 <?php
                 $teamlessUsers = $findUsers(new TeamModel, true);
                 if (!$teamlessUsers) {
@@ -143,13 +144,14 @@ $v->layout('layout', ['title' => 'Admin']);
                                                 <?= htmlspecialchars($u->name); ?>
                                             </span>
                                             <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
+                                            <a href="javascript:" class="password" data-id="<?= $u->id; ?>"></a>
                                             <a href="javascript:" class="participating" data-id="<?= $u->id; ?>"></a>
                                         </label>
                                     </div>
                                 </li>
                             <?php } ?>
                         </ul>
-                        <select name="teamId" class="custom-select custom-select-sm mt-4">
+                        <select name="teamId" class="custom-select custom-select-sm mt-2">
                             <option value="0">-- Select a team --</option>
                             <?php foreach ($teams as $team) { ?>
                                 <option value="<?= $team->id; ?>"><?= htmlspecialchars($team->name); ?></option>
@@ -166,7 +168,7 @@ $v->layout('layout', ['title' => 'Admin']);
 
         <div class="card">
             <div class="card-header">People not participating</div>
-            <div class="card-body">
+            <div class="card-body p-1">
                 <?php
                 $notParticipating = $findUsers(new TeamModel, false);
                 if (!$notParticipating) {
@@ -174,7 +176,6 @@ $v->layout('layout', ['title' => 'Admin']);
                 } else {
                     ?>
                     <form action="<?= route('set-participating'); ?>" method="post">
-                        <input type="hidden" name="isParticipating" value="1">
                         <ul class="list-group list-group-flush">
                             <?php foreach ($notParticipating as $u) { ?>
                                 <li class="list-group-item p-1">
@@ -186,11 +187,13 @@ $v->layout('layout', ['title' => 'Admin']);
                                                 <?= htmlspecialchars($u->name); ?>
                                             </span>
                                             <a href="javascript:" class="impersonate" data-id="<?= $u->id; ?>"></a>
+                                            <a href="javascript:" class="password" data-id="<?= $u->id; ?>"></a>
                                         </label>
                                     </div>
                                 </li>
                             <?php } ?>
                         </ul>
+                        <input type="hidden" name="isParticipating" value="1">
                         <button type="submit" class="btn btn-primary btn-sm btn-block mt-2">
                             Set as participating
                         </button>
@@ -212,10 +215,14 @@ $v->layout('layout', ['title' => 'Admin']);
     <input type="hidden" name="isParticipating" value="0">
 </form>
 
+<form class="invisible" method="post" action="<?= route('reset-password'); ?>" id="form-password">
+    <input type="hidden" name="userId" id="password">
+</form>
+
 <script>
     document.querySelectorAll('a.impersonate').forEach(function (a) {
         a.className += ' btn btn-link btn-sm p-0 m-0 ml-1';
-        a.innerHTML = '🔑';
+        a.innerHTML = '👮';
         a.title = 'Impersonate';
         a.style.textDecoration = 'none';
 
@@ -229,13 +236,28 @@ $v->layout('layout', ['title' => 'Admin']);
 
     document.querySelectorAll('a.participating').forEach(function (a) {
         a.className += ' btn btn-link btn-sm p-0 m-0 ml-1';
-        a.innerHTML = '🛑';
+        a.innerHTML = '⏸️';
         a.title = 'Set as not participating';
         a.style.textDecoration = 'none';
 
         a.addEventListener('click', function (event) {
             document.getElementById('set-participating').value = event.target.dataset.id;
             document.getElementById('form-participating').submit();
+        });
+    });
+
+    document.querySelectorAll('a.password').forEach(function (a) {
+        a.className += ' btn btn-link btn-sm p-0 m-0 ml-1';
+        a.innerHTML = '🔓️';
+        a.title = 'Reset password';
+        a.style.textDecoration = 'none';
+
+        a.addEventListener('click', function (event) {
+            if(!confirm('Reset password?')){
+                return;
+            }
+            document.getElementById('password').value = event.target.dataset.id;
+            document.getElementById('form-password').submit();
         });
     });
 </script>

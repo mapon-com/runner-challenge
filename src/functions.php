@@ -4,11 +4,19 @@ use App\Bootstrap;
 
 /**
  * @param string $route
+ * @param bool $absolute
  * @return string
  */
-function route($route): string
+function route($route, bool $absolute = false): string
 {
-    return Bootstrap::$routeGenerator->generate($route);
+    $prefix = '';
+
+    if ($absolute) {
+        $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+        $prefix = ($isHttps ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+    }
+
+    return $prefix . Bootstrap::$routeGenerator->generate($route);
 }
 
 /**

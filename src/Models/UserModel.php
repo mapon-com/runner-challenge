@@ -16,6 +16,8 @@ class UserModel
     public $isAdmin;
     /** @var bool */
     public $isParticipating;
+    /** @var string|null */
+    public $passwordResetKey;
 
     /** @var bool Is currently impersonating this user */
     public $isImpersonating;
@@ -35,6 +37,7 @@ class UserModel
         $m->name = $bean->name;
         $m->isAdmin = (bool)$bean->is_admin;
         $m->isParticipating = (bool)$bean->is_participating;
+        $m->passwordResetKey = $bean->password_reset_key;
 
         return $m;
     }
@@ -57,6 +60,19 @@ class UserModel
         return password_verify($password, $this->password);
     }
 
+    public function setPassword($password)
+    {
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    public function getPasswordResetUrl(): ?string
+    {
+        if (!$this->passwordResetKey) {
+            return null;
+        }
+        return route('register', true) . '?resetKey=' . $this->passwordResetKey;
+    }
+
     public function save()
     {
         $bean = R::dispense('users');
@@ -71,6 +87,7 @@ class UserModel
         $bean->name = $this->name;
         $bean->is_admin = (int)$this->isAdmin;
         $bean->is_participating = (bool)$this->isParticipating;
+        $bean->password_reset_key = $this->passwordResetKey;
 
         R::store($bean);
 

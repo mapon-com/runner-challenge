@@ -27,5 +27,6 @@ $routes->add('impersonate', new Route('/admin/impersonate', ['action' => 'impers
 $routes->add('enable-upload', new Route('/admin/enable-upload', ['action' => 'enableUpload', 'admin' => true]));
 $routes->add('edit-rules', new Route('/admin/edit-rules', ['action' => 'editRules', 'admin' => true]));
 $routes->add('set-participating', new Route('/admin/set-participating', ['action' => 'setParticipating', 'admin' => true]));
+$routes->add('reset-password', new Route('/admin/reset-password', ['action' => 'resetPassword', 'admin' => true]));
 
 return $routes;

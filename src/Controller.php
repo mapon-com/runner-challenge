@@ -122,17 +122,20 @@ class Controller extends BaseController
         $name = $_POST['name'] ?? '';
 
         if (!$email || !$password) {
-            return $this->render('register');
+            return $this->render('register', [
+                'resetKey' => $_GET['resetKey'] ?? '',
+            ]);
         }
 
         $user = $users->findUser($email);
 
         if ($user) {
-            if ($user->passwordMatches($password)) {
-                $this->users->logIn($user);
-                return $this->redirect('board', 'Welcome back, ' . htmlspecialchars($user->name));
+            try {
+                $this->users->attemptLogIn($email, $password, $_POST['resetKey'] ?? null);
+            } catch (InvalidArgumentException $e) {
+                return $this->redirect('register', $e->getMessage());
             }
-            return $this->redirect('register', 'Password is not correct!');
+            return $this->redirect('board', 'Welcome back, ' . htmlspecialchars($user->name));
         }
 
         try {
@@ -238,5 +241,12 @@ class Controller extends BaseController
         }
 
         return $this->redirect('admin', 'Participation status changed');
+    }
+
+    public function resetPassword()
+    {
+        $newPassword = (new UserService)->resetPassword($_POST['userId']);
+
+        return $this->redirect('admin', 'URL to reset password: <code>' . $newPassword . '</code>');
     }
 }
