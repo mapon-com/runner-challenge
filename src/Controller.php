@@ -115,7 +115,7 @@ class Controller extends BaseController
             return $this->redirect('board');
         }
 
-        $resetKey = $_POST['resetKey'] ?? $_GET['resetKey'] ?? '';
+        $resetKey = $_GET['resetKey'] ?? ($_POST['resetKey'] ?? '');
         $email = trim(strtolower($_POST['email'] ?? ''));
         $password = $_POST['password'] ?? '';
         $name = $_POST['name'] ?? '';
