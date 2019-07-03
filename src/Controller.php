@@ -122,6 +122,10 @@ class Controller extends BaseController
 
         $user = $resetKey ? $this->users->findUserByResetKey($resetKey) : $this->users->findUser($email);
 
+        if ($resetKey && !$user) {
+            return $this->redirect('register', 'Password reset URL is not valid');
+        }
+
         if (!$email || !$password) {
             return $this->render('register', [
                 'resetKey' => $resetKey,
