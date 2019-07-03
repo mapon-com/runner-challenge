@@ -127,7 +127,7 @@ class Controller extends BaseController
         }
 
         if (!$email || !$password) {
-            return $this->render('register', [
+            return $this->render('login', [
                 'resetKey' => $resetKey,
                 'email' => $user ? $user->email : '',
             ]);
