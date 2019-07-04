@@ -25,6 +25,6 @@ function route($route, bool $absolute = false): string
  */
 function asset(string $url): string
 {
-    return '/' . $url;
+    // return '/' . $url;
     return Bootstrap::$routeGenerator->generate('index') . ltrim($url, '/');
 }
