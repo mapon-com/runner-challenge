@@ -135,7 +135,7 @@ class Controller extends BaseController
 
         if ($user) {
             try {
-                $this->users->attemptLogIn($email, $password, $resetKey);
+                $this->users->attemptLogIn($name, $email, $password, $resetKey);
             } catch (InvalidArgumentException $e) {
                 return $this->redirect('register', $e->getMessage());
             }

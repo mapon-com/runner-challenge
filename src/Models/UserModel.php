@@ -18,6 +18,8 @@ class UserModel
     public $isParticipating;
     /** @var string|null */
     public $passwordResetKey;
+    /** @var int */
+    public $lastVisitedAt;
 
     /** @var bool Is currently impersonating this user */
     public $isImpersonating;
@@ -38,6 +40,7 @@ class UserModel
         $m->isAdmin = (bool)$bean->is_admin;
         $m->isParticipating = (bool)$bean->is_participating;
         $m->passwordResetKey = $bean->password_reset_key;
+        $m->lastVisitedAt = (int)$bean->last_visited_at;
 
         return $m;
     }
@@ -88,6 +91,7 @@ class UserModel
         $bean->is_admin = (int)$this->isAdmin;
         $bean->is_participating = (bool)$this->isParticipating;
         $bean->password_reset_key = $this->passwordResetKey;
+        $bean->last_visited_at = $this->lastVisitedAt;
 
         R::store($bean);
 

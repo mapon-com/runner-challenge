@@ -29,6 +29,7 @@ class UserService
         $user->name = trim($name);
         $user->isAdmin = $shouldBeAdmin;
         $user->isParticipating = true;
+        $user->lastVisitedAt = time();
 
         $user->save();
 
@@ -66,9 +67,12 @@ class UserService
         return null;
     }
 
-    public function attemptLogIn(string $email, string $password, ?string $resetKey)
+    public function attemptLogIn(string $name, string $email, string $password, ?string $resetKey)
     {
         $user = $this->findUser($email);
+
+        $name = trim($name);
+        $name = $name && $name !== $user->name ? $name : $user->name;
 
         if ($resetKey) {
             if ($user->passwordResetKey !== $resetKey) {
@@ -76,12 +80,16 @@ class UserService
             }
             $user->setPassword($password);
             $user->passwordResetKey = null;
+            $user->name = $name;
             $user->save();
             $this->logIn($user);
             return true;
         }
 
         if ($user->passwordMatches($password)) {
+            $user->name = $name;
+            $user->lastVisitedAt = time();
+            $user->save();
             $this->logIn($user);
             return true;
         }
