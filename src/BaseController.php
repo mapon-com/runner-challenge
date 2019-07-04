@@ -72,7 +72,7 @@ abstract class BaseController
         $variables += [
             'user' => $this->user,
             '_flash' => $this->flash,
-            'canUpload' => $this->activities->canUpload(),
+            'canUpload' => $this->activities->canUpload($this->challenge),
         ];
 
         $templates = Engine::create(__DIR__ . '/../views');

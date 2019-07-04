@@ -89,10 +89,15 @@ class ActivityService
     /**
      * Is uploading enabled
      *
+     * @param ChallengeModel $challenge
      * @return bool
      */
-    public function canUpload(): bool
+    public function canUpload(?ChallengeModel $challenge): bool
     {
+        if ($challenge && !$challenge->isOpen()) {
+            return false;
+        }
+
         return (new SettingsService)->get('can_upload', false);
     }
 

@@ -41,7 +41,7 @@ class Controller extends BaseController
 
     public function upload()
     {
-        if (!$this->activities->canUpload()) {
+        if (!$this->activities->canUpload($this->challenge)) {
             return $this->redirect('board', 'Activities cannot be logged at this moment');
         }
 
@@ -175,9 +175,11 @@ class Controller extends BaseController
     public function admin()
     {
         return $this->render('admin', [
+            'canUpload' => $this->activities->canUpload(null),
             'teams' => $this->teams->getAll($this->challenge),
             'users' => $this->users->getAll(),
             'rules' => (new TextService)->getRules(),
+            'challenge' => $this->challenge,
         ]);
     }
 
