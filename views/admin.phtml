@@ -119,10 +119,10 @@ $v->layout('layout', ['title' => 'Admin']);
                         <button type="submit" class="btn p-1 btn-danger btn-block">Disable upload</button>
                         <?php if ($challenge) { ?>
                             <div class="pt-3">
-                            <small>
-                                From: <?=$challenge->openFrom->format('d.m.Y H:i T');?><br>
-                                Until: <?=$challenge->openUntil->format('d.m.Y H:i T');?><br>
-                            </small>
+                                <small>
+                                    From: <?= $challenge->openFrom->format('d.m.Y H:i T'); ?><br>
+                                    Until: <?= $challenge->openUntil->format('d.m.Y H:i T'); ?><br>
+                                </small>
                             </div>
                         <?php } ?>
                     <?php } else { ?>
@@ -134,10 +134,12 @@ $v->layout('layout', ['title' => 'Admin']);
         </div>
 
         <div class="card mb-3">
-            <div class="card-header">People without teams</div>
+            <?php
+            $teamlessUsers = $findUsers(new TeamModel, true);
+            ?>
+            <div class="card-header">People without teams (<?= count($teamlessUsers); ?></div>
             <div class="card-body p-1">
                 <?php
-                $teamlessUsers = $findUsers(new TeamModel, true);
                 if (!$teamlessUsers) {
                     ?><em class="text-muted">&ndash;</em><?php
                 } else {
