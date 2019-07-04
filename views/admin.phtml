@@ -137,7 +137,7 @@ $v->layout('layout', ['title' => 'Admin']);
             <?php
             $teamlessUsers = $findUsers(new TeamModel, true);
             ?>
-            <div class="card-header">People without teams (<?= count($teamlessUsers); ?></div>
+            <div class="card-header">People without teams (<?= count($teamlessUsers); ?>)</div>
             <div class="card-body p-1">
                 <?php
                 if (!$teamlessUsers) {
