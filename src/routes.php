@@ -17,6 +17,7 @@ $routes->add('people-leaderboard', new Route('people', ['action' => 'leaderboard
 $routes->add('my-team', new Route('/my-team', ['action' => 'myTeam']));
 $routes->add('rules', new Route('/rules', ['action' => 'rules']));
 $routes->add('edit-team', new Route('/edit-team', ['action' => 'editTeam']));
+$routes->add('announcement', new Route('/announcement', ['action' => 'announcement']));
 
 $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
 $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));

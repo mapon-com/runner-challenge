@@ -133,6 +133,8 @@ $v->layout('layout', ['title' => 'Admin']);
             </div>
         </div>
 
+        <?php $v->insert('admin/_announcement'); ?>
+
         <div class="card mb-3">
             <?php
             $teamlessUsers = $findUsers(new TeamModel, true);

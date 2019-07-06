@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Services\ImageService;
+use App\Services\MessageService;
 use App\Services\TextService;
 use App\Services\UserService;
 use InvalidArgumentException;
@@ -254,5 +255,11 @@ class Controller extends BaseController
         $newPassword = (new UserService)->resetPassword($_POST['userId']);
 
         return $this->redirect('admin', 'URL to reset password: <code>' . $newPassword . '</code>');
+    }
+
+    public function announcement()
+    {
+        $result = (new MessageService)->send($_POST['message']);
+        return $this->redirect('admin', $result ? 'Announcement sent!' : 'Failed to send the message!');
     }
 }
