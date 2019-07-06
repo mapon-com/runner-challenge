@@ -138,10 +138,10 @@ class UserService
     }
 
     /**
-     * @param $userIds
+     * @param array $userIds
      * @return UserModel[]
      */
-    public function getByIds($userIds): array
+    public function findByIds(array $userIds): array
     {
         return array_reduce($userIds, function ($carry, int $userId) {
             $user = $this->findById($userId);
@@ -150,6 +150,17 @@ class UserService
             }
             return $carry;
         }, []);
+    }
+
+    /**
+     * @param int $teamId
+     * @return UserModel[]
+     */
+    public function findByTeamId(int $teamId): array
+    {
+        return array_map(function ($bean) {
+            return UserModel::fromBean($bean);
+        }, R::findAll('users', 'team_id = ?', [$teamId]));
     }
 
     public function impersonate(int $userId)

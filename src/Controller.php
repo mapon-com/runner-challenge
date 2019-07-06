@@ -36,6 +36,7 @@ class Controller extends BaseController
         return $this->render('my-team', [
             'team' => $team,
             'totals' => $team ? $this->teams->getUserTotals($team) : [],
+            'people' => $team ? $this->users->findByTeamId($team->id) : [],
         ]);
     }
 
@@ -192,7 +193,7 @@ class Controller extends BaseController
     public function assignTeam()
     {
         $team = $this->teams->getById($_POST['teamId']);
-        $users = $this->users->getByIds($_POST['userIds'] ?? []);
+        $users = $this->users->findByIds($_POST['userIds'] ?? []);
 
         if (!$team) {
             $this->redirect('admin', 'Team was not found');

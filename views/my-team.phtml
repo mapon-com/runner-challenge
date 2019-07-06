@@ -2,6 +2,7 @@
 
 use App\Models\TeamModel;
 use App\Models\TotalsModel;
+use App\Models\UserModel;
 
 $v->layout('dashboard', ['title' => 'My Team']);
 $v->push('card');
@@ -9,6 +10,7 @@ $v->push('card');
 /**
  * @var TeamModel|null $team
  * @var TotalsModel[] $totals
+ * @var UserModel[] $people
  */
 
 if ($team) { ?>
@@ -44,51 +46,12 @@ $v->end();
 if ($team) {
     $v->push('after');
     ?>
-    <div class="card mt-3 mb-3">
-        <div class="card-header">Team information</div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-body text-center p-1 pt-2">
-                            <h4 class="card-title"
-                                style="text-transform: none;"><?= htmlspecialchars($team->name); ?></h4>
-                        </div>
-                        <?php if ($team->imageId) { ?>
-                            <img class="card-img-top" src="<?= htmlspecialchars($team->getImageUrl()); ?>" alt="">
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <form action="<?= route('edit-team'); ?>" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="team-name">
-                                Team name (up to 40 characters)
-                            </label>
-                            <input id="team-name" name="teamName" class="form-control"
-                                   value="<?= htmlspecialchars($team->name); ?>">
-                        </div>
-                        <div class="form-group">
-                            <label for="team-name">Image (will be cropped as a square):</label>
-
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" name="image" id="team-image">
-                                <label class="custom-file-label" id="team-image-label" for="team-image">
-                                    Select an image...
-                                </label>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        </div>
-                    </form>
-                    <script>
-                        document.getElementById('team-image').onchange = function () {
-                            document.getElementById('team-image-label').textContent = this.files[0].name;
-                        };
-                    </script>
-                </div>
-            </div>
+    <div class="row mt-4">
+        <div class="col-lg-8 mb-4">
+            <?php $v->insert('_team-profile', ['team' => $team]); ?>
+        </div>
+        <div class="col mb-4">
+            <?php $v->insert('_team-members', ['people' => $people]); ?>
         </div>
     </div>
     <?php

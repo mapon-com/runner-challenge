@@ -1,0 +1,56 @@
+<?php
+/**
+ * @var bool $canUpload
+ * @var ChallengeModel|null $challenge
+ */
+
+use App\Models\ChallengeModel;
+
+?>
+<div class="card">
+    <div class="card-header"> Log an activity</div>
+    <div class="card-body">
+        <form action="<?= route('upload'); ?>" method="post" enctype="multipart/form-data" id="gpx-form">
+            <div class="form-group">
+                <label for="customFile">Activity file (GPX):</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="gpx" id="customFile">
+                    <label class="custom-file-label" id="custom-file-label" for="customFile">Select a
+                        file...</label>
+                </div>
+                <small class="form-text text-muted">
+                    How to export from
+                    <a href="https://support.endomondo.com/hc/en-us/articles/213219528-File-Export"
+                       rel="nofollow noopener" target="_blank">Endomondo</a>
+                    or
+                    <a href="https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#GPX"
+                       rel="nofollow noopener" target="_blank">Strava</a>
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="activityUrl">Activity URL:</label>
+                <input type="url" class="form-control" name="activityUrl" id="activityUrl">
+                <small class="form-text text-muted">From your Endomondo or Strava activity page.</small>
+            </div>
+            <div class="form-group">
+                <label for="comment">Short comment:</label>
+                <input type="text" class="form-control" name="comment" id="comment">
+                <small class="form-text text-muted">Others will see this, make it motivational!</small>
+            </div>
+            <?php if ($canUpload) { ?>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-success">Upload</button>
+                </div>
+            <?php } else { ?>
+                <div class="alert alert-danger p-2 text-center mb-0">
+                    <small>Activities cannot be logged at this moment!</small>
+                </div>
+            <?php } ?>
+        </form>
+        <script>
+            document.getElementById('customFile').onchange = function () {
+                document.getElementById('custom-file-label').textContent = this.files[0].name;
+            };
+        </script>
+    </div>
+</div>
