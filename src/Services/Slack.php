@@ -17,10 +17,17 @@ class Slack
         $this->client->setDefaultUsername('Challenge');
     }
 
-    public function send(string $message): bool
+    public function send(string $message, ?string $color = null): bool
     {
         try {
-            $this->client->send($message);
+            if ($color) {
+                $this->client->attach([
+                    'text' => $message,
+                    'color' => $color
+                ])->send();
+            }else{
+                $this->client->send($message);
+            }
         } catch (\Exception $e) {
             return false;
             // Whoops

@@ -68,6 +68,8 @@ class ActivityService
         $activity->deleted_at = null;
         R::store($activity);
 
+        $this->notifyAboutActivity($user, ActivityModel::fromBean($activity));
+
         return true;
     }
 
@@ -111,4 +113,45 @@ class ActivityService
         return (new SettingsService)->set('can_upload', $canUpload);
     }
 
+    private function notifyAboutActivity(UserModel $user, ActivityModel $activity)
+    {
+        $message = ":fire: *{$user->name}* just logged *{$activity->getReadableDistance()}* in *{$activity->getReadableDuration()}*.";
+        $message .= " {$this->getQuote()}";
+
+        if ($activity->comment) {
+            [$name] = explode(' ', $user->name);
+            $message .= "\n>{$name} says: _{$activity->comment}_";
+        }
+
+        (new Slack)->send($message, 'good');
+    }
+
+    private function getQuote(): string
+    {
+        $q = [
+            'Strong is what happens when you run out of weak.',
+            'The hardest part is walking out the front door.',
+            'The Price of Excellence is discipline.',
+            'Too fit to quit.',
+            'Use it or lose it.',
+            'Willpower knows no obstacles.',
+            'Why put off feeling good?',
+            'Get a jump on your day.',
+            'Your body hears everything that your mind says.',
+            'Fitness is not a destination it is a way of life.',
+            'Get in. Get fit, and get on with life.',
+            'It never gets easier. You just get strong.',
+            'Love yourself enough to work harder.',
+            'Make yourself stronger than your excuses.',
+            'No Pain. No Gain.',
+            'Move it or lose it.',
+            'No one ever drowned in sweat.',
+            'Your sweat is your fat crying. Keep it up.',
+            'All it takes is all you got.',
+        ];
+
+        shuffle($q);
+
+        return array_pop($q);
+    }
 }
