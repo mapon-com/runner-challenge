@@ -4,12 +4,18 @@ namespace App;
 
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
+use ErrorException;
+use Monolog\ErrorHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use RedBeanPHP\R;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Run;
 
 class Bootstrap
 {
@@ -18,9 +24,11 @@ class Bootstrap
 
     public function run()
     {
-        session_start();
-
         $this->loadEnv();
+
+        $this->registerErrorHandlers();
+
+        session_start();
 
         require __DIR__ . '/functions.php';
 
@@ -30,14 +38,13 @@ class Bootstrap
         $routes->addPrefix(ltrim(getenv('URL_PREFIX'), '/'));
 
         $routeContext = new RequestContext();
-        $matcher = new UrlMatcher($routes, $routeContext);
 
         self::$routeGenerator = new UrlGenerator($routes, $routeContext);
 
         $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
         try {
-            $parameters = $matcher->match($url);
+            $parameters = (new UrlMatcher($routes, $routeContext))->match($url);
         } catch (ResourceNotFoundException $e) {
             return 'Page not found';
         }
@@ -54,5 +61,28 @@ class Bootstrap
         } catch (InvalidPathException $e) {
             die('Environment file is not set.');
         }
+    }
+
+    private function registerErrorHandlers()
+    {
+        error_reporting(E_ALL | ~E_NOTICE);
+
+        set_error_handler(function ($severity, $message, $file, $line) {
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        });
+
+        if (getenv('DEBUG') === 'true') {
+            ini_set('display_errors', 1);
+            (new Run)->appendHandler(new PrettyPageHandler)->register();
+        } else {
+            ini_set('display_errors', 0);
+        }
+
+        $log = new Logger('app');
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $log->pushHandler(new StreamHandler(__DIR__ . '/../storage/app.log', Logger::ERROR));
+
+        ErrorHandler::register($log);
     }
 }
