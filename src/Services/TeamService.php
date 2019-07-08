@@ -159,7 +159,7 @@ class TeamService
             FROM users u
             LEFT JOIN teams t ON t.id = u.team_id
             LEFT JOIN activities a ON u.id = a.user_id
-            WHERE $where
+            WHERE $where AND u.is_participating = 1
             GROUP BY $groupBy
             ORDER BY total_distance DESC
         ", $bindings);

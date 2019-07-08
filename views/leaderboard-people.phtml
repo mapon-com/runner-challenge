@@ -16,7 +16,6 @@ $i = 0;
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Team</th>
             <th scope="col">Distance</th>
             <th scope="col">Activities</th>
             <th scope="col">Last Activity</th>
@@ -25,11 +24,14 @@ $i = 0;
         <tbody>
         <?php foreach ($totals as $a) { ?>
             <tr>
-                <td><strong><?= ++$i; ?></strong></td>
-                <td><?= htmlspecialchars($a->userName); ?></td>
-                <td><?= htmlspecialchars($a->teamName); ?></td>
+                <td><strong><?= ++$i; ?>.</strong></td>
+                <td>
+                    <b><?= htmlspecialchars($a->userName); ?></b>
+                    <br>
+                    <span class="badge p-0"><?= htmlspecialchars($a->teamName); ?></span>
+                </td>
                 <td><?= $a->getReadableDistance(); ?></td>
-                <td><?= $a->activityCount; ?></td>
+                <td class="text-center"><?= $a->activityCount; ?></td>
                 <td><?= $a->getReadableLastActivityAt(); ?></td>
             </tr>
         <?php } ?>
