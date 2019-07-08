@@ -4,27 +4,22 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "76670e7f327dcc96c9b3a4d07df8bfcc",
+    "content-hash": "20a89b21ebda45de3ae2dd8b9e1ab3b5",
     "packages": [
         {
             "name": "duckfusion/waddle",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/cwarwicker/Waddle.git",
-                "reference": "ad6c1332487d7372257b4cdff61bdb5b601a2662"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cwarwicker/Waddle/zipball/ad6c1332487d7372257b4cdff61bdb5b601a2662",
-                "reference": "ad6c1332487d7372257b4cdff61bdb5b601a2662",
-                "shasum": ""
+                "url": "https://github.com/briedis/waddle",
+                "reference": "4254d311b9a2f71f91fc1f517cd6f5f3bb9581b0"
             },
             "require": {
+                "ext-simplexml": "*",
                 "php": ">=7.0.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "dev-master"
+                "phpunit/phpunit": "^7.4"
             },
             "type": "library",
             "autoload": {
@@ -32,7 +27,6 @@
                     "Waddle\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Conn Warwicker"
@@ -47,7 +41,7 @@
                 "running",
                 "tcx"
             ],
-            "time": "2018-04-04T18:57:12+00:00"
+            "time": "2019-07-08T22:25:41+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -316,16 +310,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "dc784032a3f6f4e7a4b882e272b771f6fe4c37cf"
+                "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dc784032a3f6f4e7a4b882e272b771f6fe4c37cf",
-                "reference": "dc784032a3f6f4e7a4b882e272b771f6fe4c37cf",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
+                "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
                 "shasum": ""
             },
             "require": {
@@ -383,7 +377,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2019-06-30T00:37:05+00:00"
+            "time": "2019-07-01T23:21:34+00:00"
         },
         {
             "name": "intervention/image",

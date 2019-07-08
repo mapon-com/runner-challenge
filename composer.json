@@ -18,9 +18,15 @@
         "filp/whoops": "^2.4",
         "monolog/monolog": "^1.24"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/briedis/waddle"
+        }
+    ],
     "authors": [
         {
-            "name": "MBriedis",
+            "name": "Mārtiņš Briedis",
             "email": "mbriedis@gmail.com"
         }
     ],
