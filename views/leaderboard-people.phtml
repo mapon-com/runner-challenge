@@ -15,7 +15,7 @@ $i = 0;
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
+            <th colspan="2" scope="col">Name</th>
             <th scope="col">Distance</th>
             <th scope="col">Activities</th>
             <th scope="col">Last Activity</th>
@@ -24,7 +24,14 @@ $i = 0;
         <tbody>
         <?php foreach ($totals as $a) { ?>
             <tr>
-                <td><strong><?= ++$i; ?>.</strong></td>
+                <td class="align-middle"><strong><?= ++$i; ?>.</strong></td>
+                <td class="pt-2 pb-2 pl-0 pr-0">
+                    <?php if ($a->imageUrl) { ?>
+                        <a href="<?= htmlspecialchars($a->imageUrl); ?>" target="_blank">
+                            <img src="<?= htmlspecialchars($a->imageUrl); ?>" class="img-fluid" width="50">
+                        </a>
+                    <?php } ?>
+                </td>
                 <td>
                     <b><?= htmlspecialchars($a->userName); ?></b>
                     <br>

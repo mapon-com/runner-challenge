@@ -26,6 +26,9 @@ class TotalsModel
 
     public $duration;
 
+    /** @var ?string */
+    public $imageUrl;
+
     public function getReadableLastActivityAt(): string
     {
         if (!$this->lastActivityAt) {

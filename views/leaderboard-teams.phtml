@@ -15,9 +15,8 @@ $i = 0;
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Team</th>
+            <th colspan="2" scope="col">Team</th>
             <th scope="col">Distance</th>
-            <th scope="col">Duration</th>
             <th scope="col">Activities</th>
             <th scope="col">Last Activity</th>
         </tr>
@@ -25,10 +24,19 @@ $i = 0;
         <tbody>
         <?php foreach ($totals as $a) { ?>
             <tr>
-                <td><strong><?= ++$i; ?></strong></td>
+                <td class="align-middle"><strong><?= ++$i; ?>.</strong></td>
+                <td class="pt-2 pb-2 pl-0 pr-0">
+                    <?php if ($a->imageUrl) { ?>
+                        <a href="<?= htmlspecialchars($a->imageUrl); ?>" target="_blank">
+                            <img src="<?= htmlspecialchars($a->imageUrl); ?>" class="img-fluid" width="50">
+                        </a>
+                    <?php } ?>
+                </td>
                 <td><?= htmlspecialchars($a->teamName); ?></td>
-                <td><?= $a->getReadableDistance(); ?></td>
-                <td><?= $a->getReadableDuration(); ?></td>
+                <td>
+                    <?= $a->getReadableDistance(); ?><br>
+                    <?= $a->getReadableDuration(); ?>
+                </td>
                 <td><?= $a->activityCount; ?></td>
                 <td><?= $a->getReadableLastActivityAt(); ?></td>
             </tr>

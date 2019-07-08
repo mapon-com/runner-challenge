@@ -152,6 +152,7 @@ class TeamService
                    u.id, 
                    u.name AS user_name, 
                    t.name AS team_name,
+                   t.image_id AS team_image_id,
                    SUM(distance) AS total_distance, 
                    SUM(duration) AS total_duration, 
                    MAX(a.activity_at) AS last_activity_at,
@@ -173,6 +174,9 @@ class TeamService
             $t->duration = (int)$r['total_duration'];
             $t->lastActivityAt = (int)$r['last_activity_at'];
             $t->activityCount = (int)$r['activity_count'];
+            if ($r['team_image_id']) {
+                $t->imageUrl = route('image') . '?id=' . $r['team_image_id'];
+            }
             return $t;
         }, $totalsRaw);
     }
