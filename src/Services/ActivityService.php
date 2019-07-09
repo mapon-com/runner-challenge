@@ -53,22 +53,22 @@ class ActivityService
         $file->original_filename = $filename;
         R::store($file);
 
-        $activity = R::dispense('activities');
-        $activity->challenge_id = $challenge->id;
-        $activity->user_id = $user->id;
-        $activity->file_id = $file->id;
-        $activity->activity_url = $activityUrl;
+        $activity = new ActivityModel;
+        $activity->challengeId = $challenge->id;
+        $activity->userId = $user->id;
+        $activity->fileId = $file->id;
+        $activity->activityUrl = $activityUrl;
         $activity->comment = mb_substr(trim($comment), 0, 500);
         $activity->distance = $result->getTotalDistance();
-        $activity->average_speed = $result->getAverageSpeedInKPH();
-        $activity->max_speed = $result->getMaxSpeedInKPH();
+        $activity->averageSpeed = $result->getAverageSpeedInKPH();
+        $activity->maxSpeed = $result->getMaxSpeedInKPH();
         $activity->duration = $result->getTotalDuration();
-        $activity->activity_at = $result->getStartTime('U');
-        $activity->created_at = time();
-        $activity->deleted_at = null;
-        R::store($activity);
+        $activity->activityAt = $result->getStartTime('U');
+        $activity->createdAt = time();
+        $activity->deletedAt = null;
+        $activity->save();
 
-        $this->notifyAboutActivity($user, ActivityModel::fromBean($activity));
+        $this->notifyAboutActivity($user, $activity);
 
         return true;
     }
@@ -153,5 +153,19 @@ class ActivityService
         shuffle($q);
 
         return array_pop($q);
+    }
+
+    public function deleteActivity(UserModel $user, int $activityId): bool
+    {
+        $bean = R::findOne('activities', 'id = ? AND user_id = ?', [(int)$activityId, (int)$user->id]);
+
+        if (!$bean) {
+            throw new InvalidArgumentException('Entry not found');
+        }
+
+        $activity = ActivityModel::fromBean($bean);
+        $activity->delete();
+
+        return true;
     }
 }

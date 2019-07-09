@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use RedBeanPHP\OODBBean;
+use RedBeanPHP\R;
 
 class ActivityModel
 {
@@ -12,7 +13,7 @@ class ActivityModel
     public $challengeId;
     public $userId;
     public $fileId;
-    public $workoutUrl;
+    public $activityUrl;
     public $comment;
     public $distance;
     public $averageSpeed;
@@ -30,7 +31,7 @@ class ActivityModel
         $m->challengeId = $bean->challenge_id;
         $m->userId = $bean->user_id;
         $m->fileId = $bean->file_id;
-        $m->workoutUrl = $bean->workout_url;
+        $m->activityUrl = $bean->activity_url;
         $m->comment = $bean->comment;
         $m->distance = $bean->distance;
         $m->averageSpeed = $bean->average_speed;
@@ -41,6 +42,33 @@ class ActivityModel
         $m->deletedAt = $bean->deleted_at;
 
         return $m;
+    }
+
+    public function save()
+    {
+        $bean = R::dispense('activities');
+
+        $bean->id = $this->id;
+        $bean->challenge_id = $this->challengeId;
+        $bean->user_id = $this->userId;
+        $bean->file_id = $this->fileId;
+        $bean->activity_url = $this->activityUrl;
+        $bean->comment = $this->comment;
+        $bean->distance = $this->distance;
+        $bean->average_speed = $this->averageSpeed;
+        $bean->max_speed = $this->maxSpeed;
+        $bean->duration = $this->duration;
+        $bean->activity_at = $this->activityAt;
+        $bean->created_at = $this->createdAt;
+        $bean->deleted_at = $this->deletedAt;
+
+        $this->id = R::store($bean);
+    }
+
+    public function delete()
+    {
+        $this->deletedAt = time();
+        $this->save();
     }
 
     public function getReadableActivityAt(): string

@@ -16,8 +16,8 @@ $routes->add('team-leaderboard', new Route('teams', ['action' => 'leaderboardTea
 $routes->add('people-leaderboard', new Route('people', ['action' => 'leaderboardPeople']));
 $routes->add('my-team', new Route('/my-team', ['action' => 'myTeam']));
 $routes->add('rules', new Route('/rules', ['action' => 'rules']));
+$routes->add('delete-activity', new Route('/delete-activity', ['action' => 'deleteActivity']));
 $routes->add('edit-team', new Route('/edit-team', ['action' => 'editTeam']));
-$routes->add('announcement', new Route('/announcement', ['action' => 'announcement']));
 
 $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
 $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
@@ -29,5 +29,6 @@ $routes->add('enable-upload', new Route('/admin/enable-upload', ['action' => 'en
 $routes->add('edit-rules', new Route('/admin/edit-rules', ['action' => 'editRules', 'admin' => true]));
 $routes->add('set-participating', new Route('/admin/set-participating', ['action' => 'setParticipating', 'admin' => true]));
 $routes->add('reset-password', new Route('/admin/reset-password', ['action' => 'resetPassword', 'admin' => true]));
+$routes->add('announcement', new Route('/announcement', ['action' => 'announcement', 'admin' => true]));
 
 return $routes;

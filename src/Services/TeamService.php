@@ -111,7 +111,7 @@ class TeamService
         $scores = R::getRow('
             SELECT SUM(distance) AS total_distance, SUM(duration) AS total_duration FROM activities a
             JOIN users u ON u.id = a.user_id
-            WHERE u.team_id = ?
+            WHERE u.team_id = ? AND a.deleted_at IS NULL
             GROUP BY u.team_id
         ', [$team->id]);
 
@@ -160,7 +160,7 @@ class TeamService
             FROM users u
             LEFT JOIN teams t ON t.id = u.team_id
             LEFT JOIN activities a ON u.id = a.user_id
-            WHERE $where AND u.is_participating = 1
+            WHERE $where AND u.is_participating = 1 AND a.deleted_at IS NULL
             GROUP BY $groupBy
             ORDER BY total_distance DESC
         ", $bindings);

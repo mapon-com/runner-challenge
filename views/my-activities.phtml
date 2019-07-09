@@ -23,13 +23,22 @@ if ($activities) { ?>
         </thead>
         <tbody>
         <?php foreach ($activities as $a) { ?>
-            <tr>
+            <tr <?= ($a->deletedAt ? ' style="text-decoration: line-through;" class="text-muted"' : ''); ?>>
                 <td><?= $a->getReadableDistance(); ?></td>
                 <td><?= $a->getReadableDuration(); ?></td>
                 <td><?= $a->getReadableSpeed(); ?></td>
                 <td><?= $a->getReadableActivityAt(); ?></td>
                 <td><?= $a->getReadableCreatedAt(); ?></td>
-                <td class="text-right"></td>
+                <td class="text-right">
+                    <?php if (!$a->deletedAt) { ?>
+                        <form method="post" action="<?= route('delete-activity'); ?>" class="form-inline">
+                            <input type="hidden" name="activityId" value="<?= $a->id; ?>">
+                            <button type="submit" class="btn btn-link p-0 text-decoration-none"
+                                    onclick="return confirm('Are you sure?');">❌
+                            </button>
+                        </form>
+                    <?php } ?>
+                </td>
             </tr>
         <?php } ?>
         </tbody>

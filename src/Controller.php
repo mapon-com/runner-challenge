@@ -77,6 +77,15 @@ class Controller extends BaseController
         return $this->redirect('board', 'Activity logged!');
     }
 
+    public function deleteActivity()
+    {
+        $wasDeleted = $this->activities->deleteActivity($this->user, $_POST['activityId']);
+        if ($wasDeleted && $this->team) {
+            $this->teams->recalculateTeamScore($this->team);
+        }
+        return $this->redirect('board', $wasDeleted ? 'Activity deleted.' : 'Failed to delete an activity.');
+    }
+
     public function editTeam()
     {
         if (!$this->team) {
