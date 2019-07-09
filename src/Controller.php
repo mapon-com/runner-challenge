@@ -51,6 +51,10 @@ class Controller extends BaseController
             return $this->redirect('board', 'No active challenges.');
         }
 
+        if (empty($_FILES['gpx']['tmp_name'])) {
+            return $this->redirect('board', 'Please select a file!');
+        }
+
         $gpxPathname = $_FILES['gpx']['tmp_name'];
 
         if (!is_uploaded_file($gpxPathname)) {
