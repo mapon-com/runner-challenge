@@ -47,11 +47,18 @@ class TotalsModel
         if (!$this->duration) {
             return '-';
         }
-        $d = $this->duration;
 
-        $days = floor($d / (24 * 3600));
-        $hrs = floor(($d - $days * 24 * 3600) / 3600);
-        $min = floor(($d - $hrs * 3600) / 60);
+        $secondsLeft = $this->duration;
+
+        $days = floor($secondsLeft / (24 * 3600));
+
+        $secondsLeft -= $days * 24 * 3600;
+
+        $hrs = floor($secondsLeft / 3600);
+
+        $secondsLeft -= $hrs * 3600;
+
+        $min = floor($secondsLeft / 60);
 
         return CarbonInterval::days($days)->hours($hrs)->minutes($min)->forHumans(['short' => true]);
     }
