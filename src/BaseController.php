@@ -55,6 +55,11 @@ abstract class BaseController
     {
         $isAdmin = $parameters['admin'] ?? false;
         $isPublic = !$isAdmin && ($parameters['public'] ?? false);
+        $isMaintenance = getenv('MAINTENANCE') === 'true';
+
+        if ($isMaintenance) {
+            return 'One moment, fixing some things.';
+        }
 
         if (!$isPublic && !$this->user) {
             return $this->redirect('register');
