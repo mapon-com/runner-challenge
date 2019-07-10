@@ -48,7 +48,10 @@ class ActivityModel
     {
         $bean = R::dispense('activities');
 
-        $bean->id = $this->id;
+        if ($this->id) {
+            $bean->id = $this->id;
+        }
+
         $bean->challenge_id = $this->challengeId;
         $bean->user_id = $this->userId;
         $bean->file_id = $this->fileId;
