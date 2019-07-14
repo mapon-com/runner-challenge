@@ -2,21 +2,22 @@
     "name": "briedis/runners",
     "type": "project",
     "require": {
+        "php": "^7.1",
+        "ext-json": "*",
+        "ext-mbstring": "*",
         "vlucas/phpdotenv": "^3.4",
         "gabordemooij/redbean": "^5.3",
         "league/flysystem": "^1.0",
         "symfony/routing": "^4.3",
         "league/plates": "v4.0.0-alpha",
-        "duckfusion/waddle": "dev-master",
-        "ext-mbstring": "*",
         "nesbot/carbon": "^2.20",
-        "ext-json": "*",
         "michelf/php-markdown": "^1.8",
         "ezyang/htmlpurifier": "^4.10",
         "intervention/image": "^2.5",
         "maknz/slack": "^1.7",
         "filp/whoops": "^2.4",
-        "monolog/monolog": "^1.24"
+        "monolog/monolog": "^1.24",
+        "duckfusion/waddle": "^1.0"
     },
     "repositories": [
         {

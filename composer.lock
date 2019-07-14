@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "20a89b21ebda45de3ae2dd8b9e1ab3b5",
+    "content-hash": "357a3224c89a7904377bab77dd9eafb0",
     "packages": [
         {
             "name": "duckfusion/waddle",
-            "version": "dev-master",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briedis/waddle",
-                "reference": "4254d311b9a2f71f91fc1f517cd6f5f3bb9581b0"
+                "reference": "02f1b2e6d964ce5dc8888bf8757322b8ee465571"
             },
             "require": {
                 "ext-simplexml": "*",
@@ -41,7 +41,7 @@
                 "running",
                 "tcx"
             ],
-            "time": "2019-07-08T22:25:41+00:00"
+            "time": "2019-07-14T08:43:25+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -1408,14 +1408,14 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "league/plates": 15,
-        "duckfusion/waddle": 20
+        "league/plates": 15
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-mbstring": "*",
-        "ext-json": "*"
+        "php": "^7.1",
+        "ext-json": "*",
+        "ext-mbstring": "*"
     },
     "platform-dev": []
 }
