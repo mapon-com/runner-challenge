@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Maknz\Slack\Client;
 
 class Slack
@@ -21,14 +22,16 @@ class Slack
     {
         try {
             if ($color) {
+                /** @noinspection PhpUndefinedMethodInspection */
                 $this->client->attach([
                     'text' => $message,
                     'color' => $color
                 ])->send();
             }else{
+                /** @noinspection PhpUndefinedMethodInspection */
                 $this->client->send($message);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
             // Whoops
         }

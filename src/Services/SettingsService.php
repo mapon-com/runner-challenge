@@ -6,6 +6,7 @@ namespace App\Services;
 
 use RedBeanPHP\OODBBean;
 use RedBeanPHP\R;
+use stdClass;
 
 class SettingsService
 {
@@ -35,7 +36,7 @@ class SettingsService
 
     /**
      * @param string $name
-     * @return NULL|OODBBean|\stdClass
+     * @return NULL|OODBBean|stdClass
      */
     private function getBean($name): ?OODBBean
     {
