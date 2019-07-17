@@ -125,15 +125,30 @@ class ActivityService
         $message = ":fire: *{$user->name}* just logged *{$activity->getReadableDistance()}* in *{$activity->getReadableDuration()}*.";
         $message .= " {$this->getQuote()}";
 
+        [$name] = explode(' ', $user->name);
+
+        $attachments = [];
+
         if ($activity->comment) {
-            [$name] = explode(' ', $user->name);
-            $message .= "\n>{$name} says: _{$activity->comment}_";
+            $attachments[] = [
+                'text' => "{$name} says: _{$activity->comment}_",
+                'color' => "good",
+            ];
         }
 
         $image = $activity->getImage();
-        $imageUrl = $image ? $image->getLargeUrl() : null;
+        if ($image) {
+            $attachments[] = [
+                "fallback" => "$name also uploaded a photo - " . $image->getLargeUrl(),
+                "title" => "$name also uploaded a photo!",
+                "title_link" => $image->getLargeUrl(),
+                "text" => " ",
+                "image_url" => $image->getSmallUrl(),
+                "color" => "#764FA5",
+            ];
+        }
 
-        (new Slack)->send($message, 'good', $imageUrl);
+        (new Slack)->send($message, $attachments);
     }
 
     private function getQuote(): string

@@ -18,32 +18,17 @@ class Slack
         $this->client->setDefaultUsername('Challenge');
     }
 
-    public function send(string $message, ?string $color = null, ?string $imageUrl = null): bool
+    public function send(string $message, array $attachments = []): bool
     {
-        $attach = [];
+        $client = $this->client;
 
-        if ($color) {
-            $attach += [
-                'text' => $message,
-                'color' => $color,
-            ];
-        }
-
-        if ($imageUrl) {
-            $attach += [
-                'text' => $message,
-                'image_url' => $imageUrl,
-            ];
+        foreach ($attachments as $a) {
+            $client = $client->attach($a);
         }
 
         try {
-            if ($attach) {
-                /** @noinspection PhpUndefinedMethodInspection */
-                $this->client->attach($attach)->send();
-            } else {
-                /** @noinspection PhpUndefinedMethodInspection */
-                $this->client->send($message);
-            }
+            /** @noinspection PhpUndefinedMethodInspection */
+            $client->send($message);
         } catch (Exception $e) {
             return false;
             // Whoops
