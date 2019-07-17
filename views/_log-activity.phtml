@@ -5,6 +5,7 @@
  */
 
 use App\Models\ChallengeModel;
+use App\Services\Storage;
 
 ?>
 <div class="card">
@@ -39,7 +40,7 @@ use App\Models\ChallengeModel;
                 <small class="form-text text-muted">Others will see this, make it motivational!</small>
             </div>
             <div class="form-group">
-                <label for="file-photo">Upload a photo (optional):</label>
+                <label for="file-photo">Upload a photo (optional, max size <?= Storage::getMaxUploadSize(); ?>M):</label>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" name="photo" id="file-photo" accept="image/*">
                     <label class="custom-file-label" id="file-photo-label" for="file-photo">

@@ -13,4 +13,11 @@ class Storage
 
         return new Filesystem($adapter);
     }
+
+    public static function getMaxUploadSize()
+    {
+        $upload = (int)(ini_get('upload_max_filesize'));
+        $post = (int)(ini_get('post_max_size'));
+        return min($upload, $post);
+    }
 }
