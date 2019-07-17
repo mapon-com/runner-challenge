@@ -47,7 +47,7 @@ class ActivityService
         $md5 = md5($content);
 
         if (R::findOne('files', 'md5 = ?', [$md5])) {
-            throw new InvalidArgumentException('This activity has already been uploaded');
+            //throw new InvalidArgumentException('This activity has already been uploaded');
         }
 
         $file = R::dispense('files');
@@ -140,7 +140,7 @@ class ActivityService
         if ($image) {
             $attachments[] = [
                 "fallback" => "$name also uploaded a photo - " . $image->getLargeUrl(),
-                "title" => "$name also uploaded a photo!",
+                "title" => "$name also uploaded a photo! ({$image->getLargeUrl()})",
                 "title_link" => $image->getLargeUrl(),
                 "text" => " ",
                 "image_url" => $image->getSmallUrl(),
