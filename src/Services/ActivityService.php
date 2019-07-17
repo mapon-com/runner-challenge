@@ -130,7 +130,10 @@ class ActivityService
             $message .= "\n>{$name} says: _{$activity->comment}_";
         }
 
-        (new Slack)->send($message, 'good');
+        $image = $activity->getImage();
+        $imageUrl = $image ? $image->getLargeUrl() : null;
+
+        (new Slack)->send($message, 'good', $imageUrl);
     }
 
     private function getQuote(): string
