@@ -66,7 +66,7 @@ class Controller extends BaseController
             return $this->redirect('board', 'Bad file selected.');
         }
 
-        ini_set('memory_limit', '250M');
+        ini_set('memory_limit', '400M');
 
         try {
             $this->activities->upload(
