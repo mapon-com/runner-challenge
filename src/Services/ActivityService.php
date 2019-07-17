@@ -143,7 +143,7 @@ class ActivityService
                 "title" => "$name also uploaded a photo!",
                 "title_link" => $image->getLargeUrl(),
                 "text" => " ",
-                "image_url" => $image->getSmallUrl(),
+                "image_url" => $image->getLargeUrl(),
                 "color" => "#764FA5",
             ];
         }
