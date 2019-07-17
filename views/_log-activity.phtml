@@ -14,9 +14,10 @@ use App\Models\ChallengeModel;
             <div class="form-group">
                 <label for="customFile">Activity file (GPX):</label>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="gpx" id="customFile">
-                    <label class="custom-file-label" id="custom-file-label" for="customFile">Select a
-                        file...</label>
+                    <input type="file" class="custom-file-input" name="gpx" id="file-gpx" accept="text/*">
+                    <label class="custom-file-label" id="file-gpx-label" for="file-gpx">
+                        Select a file...
+                    </label>
                 </div>
                 <small class="form-text text-muted">
                     How to export from
@@ -33,9 +34,18 @@ use App\Models\ChallengeModel;
                 <small class="form-text text-muted">From your Endomondo or Strava activity page.</small>
             </div>
             <div class="form-group">
-                <label for="comment">Short comment:</label>
+                <label for="comment">Short comment (optional):</label>
                 <input type="text" class="form-control" name="comment" id="comment">
                 <small class="form-text text-muted">Others will see this, make it motivational!</small>
+            </div>
+            <div class="form-group">
+                <label for="file-photo">Upload a photo (optional):</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="photo" id="file-photo" accept="image/*">
+                    <label class="custom-file-label" id="file-photo-label" for="file-photo">
+                        Select a photo...
+                    </label>
+                </div>
             </div>
             <?php if ($canUpload) { ?>
                 <div class="text-right">
@@ -48,8 +58,11 @@ use App\Models\ChallengeModel;
             <?php } ?>
         </form>
         <script>
-            document.getElementById('customFile').onchange = function () {
-                document.getElementById('custom-file-label').textContent = this.files[0].name;
+            document.getElementById('file-gpx').onchange = function () {
+                document.getElementById('file-gpx-label').textContent = this.files[0].name;
+            };
+            document.getElementById('file-photo').onchange = function () {
+                document.getElementById('file-photo-label').textContent = this.files[0].name;
             };
         </script>
     </div>

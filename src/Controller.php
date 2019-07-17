@@ -56,9 +56,14 @@ class Controller extends BaseController
         }
 
         $gpxPathname = $_FILES['gpx']['tmp_name'];
+        $photoPathname = $_FILES['photo']['tmp_name'] ?? null;
+
+        if ($photoPathname && !is_uploaded_file($photoPathname)) {
+            return $this->redirect('board', 'Bad image selected.');
+        }
 
         if (!is_uploaded_file($gpxPathname)) {
-            return $this->redirect('board', 'Bad file selected');
+            return $this->redirect('board', 'Bad file selected.');
         }
 
         try {
@@ -68,7 +73,8 @@ class Controller extends BaseController
                 $_FILES['gpx']['name'],
                 $gpxPathname,
                 $_POST['activityUrl'],
-                $_POST['comment']
+                $_POST['comment'],
+                $photoPathname
             );
         } catch (InvalidArgumentException $e) {
             return $this->redirect('board', $e->getMessage());

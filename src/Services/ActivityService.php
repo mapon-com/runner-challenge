@@ -18,7 +18,8 @@ class ActivityService
         string $filename,
         string $pathname,
         string $activityUrl,
-        string $comment
+        string $comment,
+        ?string $photoPathname
     ): bool {
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
@@ -28,6 +29,11 @@ class ActivityService
 
         if (!filter_var($activityUrl, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('Invalid activity URL. Make sure to copy the full URL from your browser.');
+        }
+
+        $imageId = null;
+        if ($photoPathname) {
+            $imageId = (new ImageService)->upload($photoPathname, 'images')->id;
         }
 
         try {
@@ -58,6 +64,7 @@ class ActivityService
         $activity->userId = $user->id;
         $activity->fileId = $file->id;
         $activity->activityUrl = $activityUrl;
+        $activity->imageId = $imageId;
         $activity->comment = mb_substr(trim($comment), 0, 500);
         $activity->distance = $result->getTotalDistance();
         $activity->averageSpeed = $result->getAverageSpeedInKPH();

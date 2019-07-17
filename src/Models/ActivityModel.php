@@ -19,6 +19,7 @@ class ActivityModel
     public $averageSpeed;
     public $maxSpeed;
     public $duration;
+    public $imageId;
     public $activityAt;
     public $createdAt;
     public $deletedAt;
@@ -37,6 +38,7 @@ class ActivityModel
         $m->averageSpeed = $bean->average_speed;
         $m->maxSpeed = $bean->max_speed;
         $m->duration = $bean->duration;
+        $m->imageId = $bean->image_id;
         $m->activityAt = $bean->activityAt;
         $m->createdAt = $bean->created_at;
         $m->deletedAt = $bean->deleted_at;
@@ -61,6 +63,7 @@ class ActivityModel
         $bean->average_speed = $this->averageSpeed;
         $bean->max_speed = $this->maxSpeed;
         $bean->duration = $this->duration;
+        $bean->image_id = $this->imageId;
         $bean->activity_at = $this->activityAt;
         $bean->created_at = $this->createdAt;
         $bean->deleted_at = $this->deletedAt;
@@ -100,5 +103,13 @@ class ActivityModel
     public function getReadableSpeed(): string
     {
         return round($this->averageSpeed, 2) . ' km/h';
+    }
+
+    public function getImage(): ?ImageModel
+    {
+        if ($this->imageId) {
+            return ImageModel::getById($this->imageId);
+        }
+        return null;
     }
 }

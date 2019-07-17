@@ -24,6 +24,8 @@ class Bootstrap
 
     public function run()
     {
+        define('ROOT', realpath(__DIR__ . '/../'));
+
         $this->loadEnv();
 
         $this->registerErrorHandlers();

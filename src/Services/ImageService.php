@@ -1,12 +1,14 @@
 <?php
 
-
 namespace App\Services;
 
-
+use App\Models\ImageModel;
+use Intervention\Image\Constraint;
 use Intervention\Image\Exception\NotReadableException;
+use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
+use League\Flysystem\FileExistsException;
 use RedBeanPHP\R;
 
 class ImageService
@@ -15,6 +17,7 @@ class ImageService
      * Upload an image
      * @param string $pathname
      * @return int Image id
+     * @deprecated Use ImageService::upload()
      */
     public function create(string $pathname): int
     {
@@ -47,5 +50,78 @@ class ImageService
         }
 
         return base64_decode($bean->image);
+    }
+
+    /**
+     * @param string $sourcePathname
+     * @param string $targetDirectory
+     * @return ImageModel
+     */
+    public function upload(string $sourcePathname, string $targetDirectory): ImageModel
+    {
+        $manager = new ImageManager(['driver' => 'gd']);
+
+        try {
+            $image = $manager->make($sourcePathname);
+        } catch (NotReadableException $e) {
+            throw new InvalidArgumentException('Failed to read the image');
+        }
+
+        $extension = strpos(strtolower($image->mime()), 'png') !== false ? 'png' : 'jpg';
+
+        $model = $this->createEntry($extension, $targetDirectory);
+
+        try {
+            $this->resizeAndSave($model, $image);
+        } catch (FileExistsException $e) {
+            throw new InvalidArgumentException('Image saving failed');
+        }
+
+        return $model;
+    }
+
+    /**
+     * @param ImageModel $model
+     * @param Image $image
+     * @throws FileExistsException
+     */
+    private function resizeAndSave(ImageModel $model, Image $image)
+    {
+        $image->backup();
+
+        $constraint = function (Constraint $constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        };
+
+        $image->resize(1000, 1000, $constraint);
+
+        $model->getStorage()->writeStream(
+            $model->getLargeFilename(),
+            $image->stream($model->extension, 90)->detach()
+        );
+
+        $image->reset();
+
+        $image->resize(400, 400, $constraint);
+
+        $model->getStorage()->writeStream(
+            $model->getSmallFilename(),
+            $image->stream($model->extension, 90)->detach()
+        );
+
+        $image->destroy();
+    }
+
+    private function createEntry(string $extension, string $targetDirectory)
+    {
+        $image = new ImageModel;
+        $image->directory = $targetDirectory;
+        $image->extension = $extension;
+        $image->createdAt = time();
+
+        $image->save();
+
+        return $image;
     }
 }
