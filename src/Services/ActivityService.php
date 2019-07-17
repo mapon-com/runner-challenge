@@ -140,7 +140,7 @@ class ActivityService
         if ($image) {
             $attachments[] = [
                 "fallback" => "$name also uploaded a photo - " . $image->getLargeUrl(),
-                "title" => "$name also uploaded a photo! ({$image->getLargeUrl()})",
+                "title" => "$name also uploaded a photo!",
                 "title_link" => $image->getLargeUrl(),
                 "text" => " ",
                 "image_url" => $image->getSmallUrl(),

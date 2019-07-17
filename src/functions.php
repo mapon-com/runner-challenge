@@ -21,10 +21,10 @@ function route($route, bool $absolute = false): string
 
 /**
  * @param string $url
+ * @param bool $absolute
  * @return string
  */
-function asset(string $url): string
+function asset(string $url, bool $absolute = false): string
 {
-    // return '/' . $url;
-    return Bootstrap::$routeGenerator->generate('index') . ltrim($url, '/');
+    return route('index', $absolute) . ltrim($url, '/');
 }

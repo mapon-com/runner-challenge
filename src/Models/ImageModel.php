@@ -88,7 +88,7 @@ class ImageModel
 
     public function getUrl($suffix): string
     {
-        return asset('files/' . $this->directory . '/' . $this->getFilename($suffix));
+        return asset('files/' . $this->directory . '/' . $this->getFilename($suffix), true);
     }
 
     public function getStorage(): Filesystem
