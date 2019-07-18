@@ -15,7 +15,7 @@ use App\Services\Storage;
             <div class="form-group">
                 <label for="customFile">Activity file (GPX):</label>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="gpx" id="file-gpx" accept="text/*">
+                    <input type="file" class="custom-file-input" name="gpx" id="file-gpx">
                     <label class="custom-file-label" id="file-gpx-label" for="file-gpx">
                         Select a file...
                     </label>
@@ -42,7 +42,7 @@ use App\Services\Storage;
             <div class="form-group">
                 <label for="file-photo">Upload a photo (optional, max size <?= Storage::getMaxUploadSize(); ?>M):</label>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="photo" id="file-photo" accept="image/*">
+                    <input type="file" class="custom-file-input" name="photo" id="file-photo">
                     <label class="custom-file-label" id="file-photo-label" for="file-photo">
                         Select a photo...
                     </label>
