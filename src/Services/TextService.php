@@ -19,6 +19,15 @@ class TextService
     public function setRules(string $markdown)
     {
         $config = HTMLPurifier_Config::createDefault();
+
+        $cachePath = ROOT . '/storage/purifier';
+
+        if (!is_dir($cachePath)) {
+            mkdir($cachePath, 0777, true);
+        }
+
+        $config->set('Cache.SerializerPath', $cachePath);
+
         $purifier = new HTMLPurifier($config);
         $html = MarkdownExtra::defaultTransform($markdown);
 
