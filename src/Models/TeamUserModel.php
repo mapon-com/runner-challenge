@@ -57,9 +57,35 @@ class TeamUserModel
      * @param int $userId
      * @return TeamUserModel|null
      */
-    public static function findOne(int $teamId, int $userId)
+    public static function findOne(int $teamId, int $userId): ?TeamUserModel
     {
         $bean = R::findOne(self::TABLE, 'team_id = ? AND user_id = ?', [$teamId, $userId]);
+        if ($bean) {
+            return self::fromBean($bean);
+        }
+        return null;
+    }
+
+    /**
+     * @param int $teamId
+     * @return TeamUserModel[]
+     */
+    public static function findByTeamId(int $teamId): array
+    {
+        $beans = R::findAll(self::TABLE, 'team_id = ?', [$teamId]);
+        return array_map(function ($bean) {
+            return self::fromBean($bean);
+        }, $beans);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $challengeId
+     * @return TeamUserModel|null
+     */
+    public static function findOneByChallenge(int $userId, int $challengeId): ?TeamUserModel
+    {
+        $bean = R::findOne(self::TABLE, 'challenge_id = ? AND user_id = ?', [$challengeId, $userId]);
         if ($bean) {
             return self::fromBean($bean);
         }

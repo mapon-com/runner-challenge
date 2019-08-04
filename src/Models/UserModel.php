@@ -45,17 +45,10 @@ class UserModel
         return $m;
     }
 
-    /**
-     * @param int $teamId
-     * @return UserModel[]
-     */
-    public static function findByTeam(int $teamId): array
+    public static function findById(int $userId): ?UserModel
     {
-        $beans = R::findAll('users', 'team_id = ?', [$teamId]);
-
-        return array_map(function ($bean) {
-            return self::fromBean($bean);
-        }, $beans);
+        $bean = R::findOne('users', 'id = ?', [$userId]);
+        return $bean ? self::fromBean($bean) : null;
     }
 
     public function passwordMatches($password): bool

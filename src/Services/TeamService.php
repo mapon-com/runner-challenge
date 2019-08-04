@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ChallengeModel;
 use App\Models\TeamModel;
+use App\Models\TeamUserModel;
 use App\Models\TotalsModel;
 use App\Models\UserModel;
 use RedBeanPHP\R;
@@ -74,21 +75,28 @@ class TeamService
     public function assignUsers(TeamModel $team, array $users)
     {
         foreach ($users as $user) {
-            if ($user->teamId) {
+            if (TeamUserModel::findOneByChallenge($user->id, $team->challengeId)) {
+                // Already in a team for this challenge
                 continue;
             }
-            $user->teamId = $team->id;
-            $user->save();
+
+            $teamUser = new TeamUserModel;
+            $teamUser->teamId = $team->id;
+            $teamUser->userId = $user->id;
+            $teamUser->challengeId = $team->challengeId;
+            $teamUser->save();
         }
 
         $this->recalculateTeamScore($team);
     }
 
-    public function unassignUser(?UserModel $user)
+    public function unassignUser(ChallengeModel $challenge, UserModel $user)
     {
-        $team = $this->getById($user->teamId);
-        $user->teamId = null;
-        $user->save();
+        $teamUser = TeamUserModel::findOneByChallenge($user->id, $challenge->id);
+
+        $team = $this->getById($teamUser->teamId);
+
+        $teamUser->delete();
 
         if ($team) {
             $this->recalculateTeamScore($team);
@@ -97,12 +105,10 @@ class TeamService
 
     public function deleteTeam(TeamModel $team)
     {
-        $users = UserModel::findByTeam($team->id);
-        foreach ($users as $v) {
-            $v->teamId = null;
-            $v->save();
+        $teamUsers = TeamUserModel::findByTeamId($team->id);
+        foreach ($teamUsers as $v) {
+            $v->delete();
         }
-
         $team->delete();
     }
 
@@ -120,31 +126,17 @@ class TeamService
         $team->save();
     }
 
-    /**
-     * @return TotalsModel[]
-     */
-    public function getTeamTotals(): array
+    public function getUserLeaderboard(ChallengeModel $challenge, ?TeamModel $team = null)
     {
-        return $this->getUserTotals(null, true);
-    }
+        $bindings = [
+            'challengeId' => $challenge->id,
+        ];
 
-    /**
-     * @param TeamModel|null $team
-     * @param bool $groupByTeam
-     * @return TotalsModel[]
-     */
-    public function getUserTotals(?TeamModel $team, bool $groupByTeam = false): array
-    {
-        $where = '1';
-        $bindings = [];
-        $groupBy = 'u.id';
+        $sql = '1';
 
         if ($team) {
-            $where = 't.id = ?';
-            $bindings = [$team->id];
-        } elseif ($groupByTeam) {
-            $groupBy = 't.id';
-            $where = 'u.team_id IS NOT NULL';
+            $bindings['teamId'] = $team->id;
+            $sql = 't.id = :teamId';
         }
 
         $totalsRaw = R::getAll("
@@ -158,27 +150,53 @@ class TeamService
                    MAX(a.activity_at) AS last_activity_at,
                    COUNT(a.id) AS activity_count
             FROM users u
-            LEFT JOIN teams t ON t.id = u.team_id
-            LEFT JOIN activities a ON u.id = a.user_id
-            WHERE $where AND u.is_participating = 1 AND a.deleted_at IS NULL
-            GROUP BY $groupBy
+            LEFT JOIN activities a ON a.user_id = u.id AND a.deleted_at IS NULL
+            LEFT JOIN teamsusers tu ON tu.user_id = u.id
+            LEFT JOIN teams t ON t.id = tu.team_id 
+            WHERE 
+                   $sql 
+                   AND tu.challenge_id = :challengeId
+                   AND u.is_participating = 1
+            GROUP BY u.id
             ORDER BY total_distance DESC
         ", $bindings);
 
-        return array_map(function ($r) {
-            $t = new TotalsModel;
-            $t->id = (int)$r['id'];
-            $t->userName = $r['user_name'];
-            $t->teamName = $r['team_name'];
-            $t->distance = (float)$r['total_distance'];
-            $t->duration = (int)$r['total_duration'];
-            $t->lastActivityAt = (int)$r['last_activity_at'];
-            $t->activityCount = (int)$r['activity_count'];
-            if ($r['team_image_id']) {
-                $t->imageUrl = route('image') . '?id=' . $r['team_image_id'];
-            }
-            return $t;
-        }, $totalsRaw);
+        return $this->parseTotals($totalsRaw);
+    }
+
+    /**
+     * @param null|ChallengeModel $challenge
+     * @return TotalsModel[]
+     */
+    public function getTeamLeaderboard(?ChallengeModel $challenge): array
+    {
+        if (!$challenge) {
+            return [];
+        }
+
+        $totalsRaw = R::getAll("
+            SELECT 
+                   u.id, 
+                   t.id AS team_id,
+                   u.name AS user_name, 
+                   t.name AS team_name,
+                   t.image_id AS team_image_id,
+                   SUM(distance) AS total_distance, 
+                   SUM(duration) AS total_duration, 
+                   MAX(a.activity_at) AS last_activity_at,
+                   COUNT(a.id) AS activity_count
+            FROM users u
+            LEFT JOIN activities a ON a.user_id = u.id AND a.deleted_at IS NULL
+            JOIN teamsusers tu ON tu.user_id = u.id AND tu.challenge_id = :challengeId
+            JOIN teams t ON t.id = tu.team_id
+            WHERE u.is_participating = 1 
+            GROUP BY t.id
+            ORDER BY total_distance DESC
+        ", [
+            'challengeId' => $challenge->id,
+        ]);
+
+        return $this->parseTotals($totalsRaw);
     }
 
     /**
@@ -206,5 +224,27 @@ class TeamService
 
         $team->imageId = $imageId;
         $team->save();
+    }
+
+    /**
+     * @param array $totalsRaw
+     * @return TotalsModel[]
+     */
+    private function parseTotals(array $totalsRaw): array
+    {
+        return array_map(function ($r) {
+            $t = new TotalsModel;
+            $t->id = (int)$r['id'];
+            $t->userName = $r['user_name'];
+            $t->teamName = $r['team_name'];
+            $t->distance = (float)$r['total_distance'];
+            $t->duration = (int)$r['total_duration'];
+            $t->lastActivityAt = (int)$r['last_activity_at'];
+            $t->activityCount = (int)$r['activity_count'];
+            if ($r['team_image_id']) {
+                $t->imageUrl = route('image') . '?id=' . $r['team_image_id'];
+            }
+            return $t;
+        }, $totalsRaw);
     }
 }

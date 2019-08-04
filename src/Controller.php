@@ -2,11 +2,15 @@
 
 namespace App;
 
+use App\Models\TeamModel;
+use App\Models\TeamUserModel;
+use App\Models\UserModel;
 use App\Services\ImageService;
 use App\Services\MessageService;
 use App\Services\TextService;
 use App\Services\UserService;
 use InvalidArgumentException;
+use RedBeanPHP\R;
 
 class Controller extends BaseController
 {
@@ -29,15 +33,12 @@ class Controller extends BaseController
         ]);
     }
 
-
     public function myTeam()
     {
-        $team = $this->teams->getById($this->user->teamId);
-
         return $this->render('my-team', [
-            'team' => $team,
-            'totals' => $team ? $this->teams->getUserTotals($team) : [],
-            'people' => $team ? $this->users->findByTeamId($team->id) : [],
+            'team' => $this->team,
+            'totals' => $this->team ? $this->teams->getUserLeaderboard($this->challenge, $this->team) : [],
+            'people' => $this->team ? $this->users->findByTeamId($this->team->id) : [],
         ]);
     }
 
@@ -82,8 +83,8 @@ class Controller extends BaseController
             return $this->redirect('board', $e->getMessage());
         }
 
-        if ($this->user->teamId) {
-            $this->teams->recalculateTeamScore($this->teams->getById($this->user->teamId));
+        if ($this->team) {
+            $this->teams->recalculateTeamScore($this->team);
         }
 
         return $this->redirect('board', 'Activity logged!');
@@ -178,14 +179,14 @@ class Controller extends BaseController
     public function leaderboardTeams()
     {
         return $this->render('leaderboard-teams', [
-            'totals' => $this->teams->getTeamTotals(),
+            'totals' => $this->teams->getTeamLeaderboard($this->challenge),
         ]);
     }
 
     public function leaderboardPeople()
     {
         return $this->render('leaderboard-people', [
-            'totals' => $this->teams->getUserTotals(null),
+            'totals' => $this->teams->getUserLeaderboard($this->challenge),
         ]);
     }
 
@@ -199,7 +200,7 @@ class Controller extends BaseController
     {
         return $this->render('admin', [
             'canUpload' => $this->activities->canUpload(null),
-            'teams' => $this->teams->getAll($this->challenge),
+            'teams' => $this->challenge ? $this->teams->getAll($this->challenge): [],
             'users' => $this->users->getAll(),
             'rules' => (new TextService)->getRules(),
             'challenge' => $this->challenge,
@@ -229,7 +230,7 @@ class Controller extends BaseController
     public function unassignTeam()
     {
         $user = $this->users->findById($_POST['userId']);
-        $this->teams->unassignUser($user);
+        $this->teams->unassignUser($this->challenge, $user);
         return $this->redirect('admin', 'A person has been unassigned from a team.');
     }
 
@@ -262,7 +263,7 @@ class Controller extends BaseController
     {
         try {
             foreach ($_POST['userIds'] as $userId) {
-                (new UserService)->setParticipating($userId, (bool)$_POST['isParticipating']);
+                (new UserService)->setParticipating($this->challenge, $userId, (bool)$_POST['isParticipating']);
             }
         } catch (InvalidArgumentException $e) {
             return $this->redirect('admin', $e->getMessage());

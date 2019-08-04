@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\ChallengeModel;
+use App\Models\TeamUserModel;
 use App\Models\UserModel;
 use InvalidArgumentException;
 use RedBeanPHP\R;
@@ -158,9 +160,10 @@ class UserService
      */
     public function findByTeamId(int $teamId): array
     {
-        return array_map(function ($bean) {
-            return UserModel::fromBean($bean);
-        }, R::findAll('users', 'team_id = ?', [$teamId]));
+        $teamUsers = TeamUserModel::findByTeamId($teamId);
+        return array_map(function (TeamUserModel $tu) {
+            return UserModel::findById($tu->userId);
+        }, $teamUsers);
     }
 
     public function impersonate(int $userId)
@@ -175,14 +178,14 @@ class UserService
         return $user;
     }
 
-    public function setParticipating(int $userId, bool $isParticipating): bool
+    public function setParticipating(ChallengeModel $challenge, int $userId, bool $isParticipating): bool
     {
         $user = $this->findById($userId);
         if (!$user) {
             return false;
         }
 
-        if ($user->teamId) {
+        if (TeamUserModel::findOneByChallenge($user->id, $challenge->id)) {
             throw new InvalidArgumentException('Cannot change participation because in a team');
         }
 

@@ -2,6 +2,7 @@
 
 use App\Models\ChallengeModel;
 use App\Models\TeamModel;
+use App\Models\TeamUserModel;
 use App\Models\UserModel;
 
 /**
@@ -17,12 +18,19 @@ use App\Models\UserModel;
  * @param bool|null $isParticipating null - ignore, true/false for participation status
  * @return UserModel[]
  */
-$findUsers = function (TeamModel $team, ?bool $isParticipating) use (&$users) {
-    return array_filter($users, function (UserModel $user) use ($team, $isParticipating) {
+$findUsers = function (?TeamModel $team, ?bool $isParticipating) use ($users, $challenge) {
+    if (!$challenge) {
+        return [];
+    }
+    return array_filter($users, function (UserModel $user) use ($team, $isParticipating, $challenge) {
         if ($isParticipating !== null && $user->isParticipating !== $isParticipating) {
             return false;
         }
-        return $user->teamId == $team->id;
+        $teamUser = TeamUserModel::findOneByChallenge($user->id, $challenge->id);
+        if (!$team && !$teamUser) {
+            return true;
+        }
+        return ($team && $teamUser) && ($team->id == $teamUser->teamId);
     });
 };
 
@@ -137,9 +145,9 @@ $v->layout('layout', ['title' => 'Admin']);
 
         <div class="card mb-3">
             <?php
-            $teamlessUsers = $findUsers(new TeamModel, true);
+            $teamlessUsers = $findUsers(null, true);
             ?>
-            <div class="card-header">People without teams (<?= count($teamlessUsers); ?>)</div>
+            <div class="card-header">Without teams (<?= count($teamlessUsers); ?>)</div>
             <div class="card-body p-1">
                 <?php
                 if (!$teamlessUsers) {
@@ -181,10 +189,12 @@ $v->layout('layout', ['title' => 'Admin']);
         </div>
 
         <div class="card">
-            <div class="card-header">People not participating</div>
+            <?php
+            $notParticipating = $findUsers(null, false);
+            ?>
+            <div class="card-header">Not participating (<?= count($notParticipating); ?>)</div>
             <div class="card-body p-1">
                 <?php
-                $notParticipating = $findUsers(new TeamModel, false);
                 if (!$notParticipating) {
                     ?><em class="text-muted">&ndash;</em><?php
                 } else {

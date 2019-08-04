@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\TeamUserModel;
 use App\Services\ActivityService;
 use App\Services\ChallengeService;
 use App\Services\TeamService;
@@ -43,8 +44,11 @@ abstract class BaseController
         $this->challenges = new ChallengeService;
         $this->challenge = $this->challenges->getCurrent();
 
-        if ($this->user && $this->user->teamId) {
-            $this->team = $this->teams->getById($this->user->teamId);
+        if ($this->user && $this->challenge) {
+            $teamUser = TeamUserModel::findOneByChallenge($this->user->id, $this->challenge->id);
+            if ($teamUser) {
+                $this->team = $this->teams->getById($teamUser->teamId);
+            }
         }
 
         $this->flash = $_SESSION['_flash'] ?? null;
