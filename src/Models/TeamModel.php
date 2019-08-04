@@ -7,6 +7,8 @@ use RedBeanPHP\R;
 
 class TeamModel
 {
+    const TABLE = 'teams';
+
     /** @var int */
     public $id;
     /** @var string $captainId User id of captain */
@@ -26,7 +28,7 @@ class TeamModel
 
     public function save()
     {
-        $team = R::dispense('teams');
+        $team = R::dispense(self::TABLE);
 
         if ($this->id) {
             $team->id = $this->id;
@@ -67,7 +69,7 @@ class TeamModel
 
     public function delete()
     {
-        R::trash('teams', $this->id);
+        R::trash(self::TABLE, $this->id);
     }
 
     public function getReadableDistance(): string
@@ -81,5 +83,29 @@ class TeamModel
             return route('image') . '?id=' . $this->imageId;
         }
         return null;
+    }
+
+    /**
+     * @param string|null $sql
+     * @param array $bindings
+     * @return TeamModel[]
+     */
+    public static function findAll($sql = null, array $bindings = [])
+    {
+        $beans = R::findAll(self::TABLE, $sql, $bindings);
+        return array_map(function ($bean) {
+            return self::fromBean($bean);
+        }, $beans);
+    }
+
+    /**
+     * @param string|null $sql
+     * @param array $bindings
+     * @return TeamModel|null
+     */
+    public static function findOne($sql = null, array $bindings = [])
+    {
+        $bean = R::findOne(self::TABLE, $sql, $bindings);
+        return $bean ? self::fromBean($bean) : null;
     }
 }

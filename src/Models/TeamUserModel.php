@@ -12,6 +12,8 @@ class TeamUserModel
     /** @var int */
     public $id;
     /** @var int */
+    public $challengeId;
+    /** @var int */
     public $teamId;
     /** @var int */
     public $userId;
@@ -25,6 +27,7 @@ class TeamUserModel
         }
 
         $bean->team_id = $this->teamId;
+        $bean->challenge_id = $this->challengeId;
         $bean->user_id = $this->userId;
 
         R::store($bean);
@@ -37,6 +40,7 @@ class TeamUserModel
         $m = new self;
 
         $m->id = $bean->id;
+        $m->challengeId = $bean->challenge_id;
         $m->teamId = $bean->team_id;
         $m->userId = $bean->user_id;
 
