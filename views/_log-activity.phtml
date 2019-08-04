@@ -5,11 +5,54 @@
  */
 
 use App\Models\ChallengeModel;
+use App\Models\UserModel;
 use App\Services\Storage;
 
+/**
+ * @var ?ChallengeModel $challenge
+ * @var UserModel $user
+ */
+
 ?>
+
+<?php if ($challenge && !$challenge->isOpen()) {
+    ?>
+    <div class="card mb-3">
+        <div class="card-header text-danger">Challenge has not started yet</div>
+        <div class="card-body">
+            <p>
+                Starts: <strong><?= $challenge->openFrom->format('d.m.Y H:i T'); ?></strong>
+            </p>
+            <form method="post" action="<?= route('participate'); ?>">
+                <?php if ($user->isParticipating) { ?>
+                    <p class="text-success">
+                        You are participating in this challenge.
+                    </p>
+                    <button type="submit" class="btn btn-sm btn-danger btn-block">
+                        I DON'T want to participate
+                    </button>
+                <?php } else { ?>
+                    <p class="text-danger">
+                        You are not participating in this challenge.
+                    </p>
+                    <button type="submit" class="btn btn-sm btn-success btn-block">
+                        I want to participate
+                    </button>
+                <?php } ?>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+
+if (!$user->isParticipating) {
+    return;
+}
+
+?>
+
 <div class="card">
-    <div class="card-header"> Log an activity</div>
+    <div class="card-header">Log an activity</div>
     <div class="card-body">
         <form action="<?= route('upload'); ?>" method="post" enctype="multipart/form-data" id="gpx-form">
             <div class="form-group">
@@ -40,7 +83,10 @@ use App\Services\Storage;
                 <small class="form-text text-muted">Others will see this, make it motivational!</small>
             </div>
             <div class="form-group">
-                <label for="file-photo">Upload a photo (optional, max size <?= Storage::getMaxUploadSize(); ?>M):</label>
+                <label for="file-photo">
+                    Upload a photo
+                    (optional, max size <?= Storage::getMaxUploadSize(); ?>M):
+                </label>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" name="photo" id="file-photo">
                     <label class="custom-file-label" id="file-photo-label" for="file-photo">

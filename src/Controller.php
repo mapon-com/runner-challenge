@@ -38,6 +38,25 @@ class Controller extends BaseController
         ]);
     }
 
+    public function participate()
+    {
+        if (!$this->challenge || $this->challenge->isOpen()) {
+            return $this->redirect('board', "Can't change status, because challenge has started.");
+        }
+
+        try {
+            $this->users->setParticipating(
+                $this->challenge,
+                $this->user->id,
+                !$this->user->isParticipating
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->redirect('board', 'You have been assigned a team and cannot change your status now!');
+        }
+
+        return $this->redirect('board', 'Participation status updated');
+    }
+
     public function upload()
     {
         if (!$this->activities->canUpload($this->challenge)) {

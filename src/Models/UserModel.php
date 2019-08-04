@@ -10,8 +10,6 @@ class UserModel
     public $id;
     public $password;
     public $email;
-    /** @var ?int */
-    public $teamId;
     public $name;
     public $isAdmin;
     /** @var bool */
@@ -35,7 +33,6 @@ class UserModel
         $m->id = $bean->id;
         $m->password = $bean->password;
         $m->email = $bean->email;
-        $m->teamId = ((int)$bean->team_id) ?: null;
         $m->name = $bean->name;
         $m->isAdmin = (bool)$bean->is_admin;
         $m->isParticipating = (bool)$bean->is_participating;
@@ -79,7 +76,6 @@ class UserModel
 
         $bean->password = $this->password;
         $bean->email = $this->email;
-        $bean->team_id = $this->teamId;
         $bean->name = $this->name;
         $bean->is_admin = (int)$this->isAdmin;
         $bean->is_participating = (bool)$this->isParticipating;
