@@ -18,7 +18,7 @@ class Controller extends BaseController
     public function board()
     {
         return $this->render('my-activities', [
-            'activities' => $this->activities->getActivities($this->user),
+            'activities' => $this->activities->getActivities($this->challenge, $this->user),
         ]);
     }
 

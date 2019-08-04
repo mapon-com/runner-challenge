@@ -47,7 +47,7 @@ class ActivityService
         $md5 = md5($content);
 
         if (R::findOne('files', 'md5 = ?', [$md5])) {
-            //throw new InvalidArgumentException('This activity has already been uploaded');
+            throw new InvalidArgumentException('This activity has already been uploaded');
         }
 
         $file = R::dispense('files');
@@ -81,13 +81,15 @@ class ActivityService
     }
 
     /**
+     * @param ChallengeModel $challenge
      * @param UserModel $user
      * @return ActivityModel[]
      */
-    public function getActivities(UserModel $user): array
+    public function getActivities(ChallengeModel $challenge, UserModel $user): array
     {
         $beans = R::findLike('activities', [
             'user_id' => $user->id,
+            'challenge_id' => $challenge->id,
         ], 'ORDER BY created_at DESC');
 
         return array_map(function ($bean) {
