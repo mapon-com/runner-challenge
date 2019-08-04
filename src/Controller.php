@@ -2,15 +2,11 @@
 
 namespace App;
 
-use App\Models\TeamModel;
-use App\Models\TeamUserModel;
-use App\Models\UserModel;
 use App\Services\ImageService;
 use App\Services\MessageService;
 use App\Services\TextService;
 use App\Services\UserService;
 use InvalidArgumentException;
-use RedBeanPHP\R;
 
 class Controller extends BaseController
 {
@@ -200,7 +196,7 @@ class Controller extends BaseController
     {
         return $this->render('admin', [
             'canUpload' => $this->activities->canUpload(null),
-            'teams' => $this->challenge ? $this->teams->getAll($this->challenge): [],
+            'teams' => $this->challenge ? $this->teams->getAll($this->challenge) : [],
             'users' => $this->users->getAll(),
             'rules' => (new TextService)->getRules(),
             'challenge' => $this->challenge,
@@ -287,19 +283,6 @@ class Controller extends BaseController
 
     public function migrate()
     {
-        $users = R::findAll('users');
-
-        foreach ($users as $v) {
-            $user = UserModel::fromBean($v);
-
-            if($user->teamId){
-                $tu = new TeamUserModel;
-                $tu->teamId = $user->teamId;
-                $tu->userId = $user->id;
-                $tu->challengeId = TeamModel::findOne('id = ?', [$user->teamId])->challengeId;
-                $tu->save();
-                dump("Migrated {$user->name}");
-            }
-        }
+        die('No migrations');
     }
 }
