@@ -31,4 +31,6 @@ $routes->add('set-participating', new Route('/admin/set-participating', ['action
 $routes->add('reset-password', new Route('/admin/reset-password', ['action' => 'resetPassword', 'admin' => true]));
 $routes->add('announcement', new Route('/announcement', ['action' => 'announcement', 'admin' => true]));
 
+$routes->add('migrate', new Route('/migrate', ['action' => 'migrate', 'admin' => true]));
+
 return $routes;

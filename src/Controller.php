@@ -284,4 +284,22 @@ class Controller extends BaseController
         $result = (new MessageService)->send($_POST['message']);
         return $this->redirect('admin', $result ? 'Announcement sent!' : 'Failed to send the message!');
     }
+
+    public function migrate()
+    {
+        $users = R::findAll('users');
+
+        foreach ($users as $v) {
+            $user = UserModel::fromBean($v);
+
+            if($user->teamId){
+                $tu = new TeamUserModel;
+                $tu->teamId = $user->teamId;
+                $tu->userId = $user->id;
+                $tu->challengeId = TeamModel::findOne('id = ?', [$user->teamId])->challengeId;
+                $tu->save();
+                dump("Migrated {$user->name}");
+            }
+        }
+    }
 }
