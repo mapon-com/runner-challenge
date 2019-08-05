@@ -150,12 +150,11 @@ class TeamService
                    MAX(a.activity_at) AS last_activity_at,
                    COUNT(a.id) AS activity_count
             FROM users u
-            LEFT JOIN activities a ON a.user_id = u.id AND a.deleted_at IS NULL
-            LEFT JOIN teamsusers tu ON tu.user_id = u.id
+            LEFT JOIN activities a ON a.user_id = u.id AND a.deleted_at IS NULL AND a.challenge_id = :challengeId
+            LEFT JOIN teamsusers tu ON tu.user_id = u.id AND tu.challenge_id = :challengeId
             LEFT JOIN teams t ON t.id = tu.team_id 
             WHERE 
                    $sql 
-                   AND tu.challenge_id = :challengeId
                    AND u.is_participating = 1
             GROUP BY u.id
             ORDER BY total_distance DESC
@@ -186,7 +185,7 @@ class TeamService
                    MAX(a.activity_at) AS last_activity_at,
                    COUNT(a.id) AS activity_count
             FROM users u
-            LEFT JOIN activities a ON a.user_id = u.id AND a.deleted_at IS NULL
+            LEFT JOIN activities a ON a.user_id = u.id AND a.deleted_at IS NULL AND a.challenge_id = :challengeId
             JOIN teamsusers tu ON tu.user_id = u.id AND tu.challenge_id = :challengeId
             JOIN teams t ON t.id = tu.team_id
             WHERE u.is_participating = 1 
