@@ -42,7 +42,9 @@ abstract class BaseController
         $this->user = $this->users->getLoggedIn();
         $this->teams = new TeamService;
         $this->challenges = new ChallengeService;
-        $this->challenge = $this->challenges->getCurrent();
+
+        $viewChallengeId = $_GET['challengeId'] ?? null;
+        $this->challenge = $viewChallengeId ? $this->challenges->getById($viewChallengeId) : $this->challenges->getCurrent();
 
         if ($this->user && $this->challenge) {
             $teamUser = TeamUserModel::findOneByChallenge($this->user->id, $this->challenge->id);
