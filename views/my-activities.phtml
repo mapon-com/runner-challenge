@@ -37,7 +37,7 @@ if ($activities) { ?>
                 </td>
                 <td class="align-middle"><?= $a->getReadableDuration(); ?></td>
                 <td class="align-middle"><?= $a->getReadableSpeed(); ?></td>
-                <td class="align-middle"><?= $a->getReadableActivityAt(); ?></td>
+                <td class="align-middle"><a href="<?=htmlspecialchars($a->activityUrl);?>" target="_blank" rel="noopener noreferrer"><?= $a->getReadableActivityAt(); ?></a></td>
                 <td class="align-middle"><?= $a->getReadableCreatedAt(); ?></td>
                 <td class="align-middle text-right px-0">
                     <?php if (!$a->deletedAt) { ?>
