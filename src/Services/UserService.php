@@ -22,20 +22,24 @@ class UserService
             throw new InvalidArgumentException('Email already registered');
         }
 
-        $shouldBeAdmin = in_array($email, explode(',', getenv('ADMIN_EMAILS')), true);
-
         $user = new UserModel;
 
         $user->email = $email;
         $user->setPassword($password);
         $user->name = trim($name);
-        $user->isAdmin = $shouldBeAdmin;
+        $user->isAdmin = $this->shouldBeAdmin($email);
         $user->isParticipating = true;
         $user->lastVisitedAt = time();
 
         $user->save();
 
         return $user;
+    }
+
+    private function shouldBeAdmin(string $email): bool
+    {
+        $list = trim(mb_strtolower(getenv('ADMIN_EMAILS')));
+        return in_array($email, explode(',', $list), true);
     }
 
     public function findUserByResetKey(?string $resetKey): ?UserModel
@@ -75,6 +79,7 @@ class UserService
 
         $name = trim($name);
         $name = $name && $name !== $user->name ? $name : $user->name;
+        $shouldBeAdmin = $this->shouldBeAdmin($email);
 
         if ($resetKey) {
             if ($user->passwordResetKey !== $resetKey) {
@@ -83,6 +88,7 @@ class UserService
             $user->setPassword($password);
             $user->passwordResetKey = null;
             $user->name = $name;
+            $user->isAdmin = $shouldBeAdmin;
             $user->save();
             $this->logIn($user);
             return true;
@@ -91,6 +97,7 @@ class UserService
         if ($user->passwordMatches($password)) {
             $user->name = $name;
             $user->lastVisitedAt = time();
+            $user->isAdmin = $shouldBeAdmin;
             $user->save();
             $this->logIn($user);
             return true;
