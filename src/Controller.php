@@ -6,6 +6,7 @@ use App\Services\ImageService;
 use App\Services\MessageService;
 use App\Services\TextService;
 use App\Services\UserService;
+use Carbon\Carbon;
 use InvalidArgumentException;
 
 class Controller extends BaseController
@@ -303,5 +304,28 @@ class Controller extends BaseController
     public function migrate()
     {
         die('No migrations');
+    }
+
+    public function downloadGpx()
+    {
+        $activityId = $_GET['activityId'];
+        $activity = $this->activities->getActivity($this->user, $activityId);
+
+        if (!$activity) {
+            return $this->redirect('board', 'Activity was not found');
+        }
+
+        $gpx = $this->activities->getGpx($activity);
+
+        if (!$gpx) {
+            return $this->redirect('board', 'GPX file was not found');
+        }
+
+        header('Cache-Control: public, max-age=31536000');
+        header('Content-Type: application/gpx+xml');
+        header('Content-Length: ' . strlen($gpx));
+        $filename = 'activity-' . Carbon::createFromTimestamp($activity->createdAt)->format('Ymd-His') . '.gpx';
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        return $gpx;
     }
 }

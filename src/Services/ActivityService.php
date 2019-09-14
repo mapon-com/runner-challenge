@@ -195,4 +195,27 @@ class ActivityService
 
         return true;
     }
+
+    public function getActivity(UserModel $user, int $activityId): ?ActivityModel
+    {
+        $activity = ActivityModel::getById($activityId);
+        if ($activity && $activity->userId == $user->id) {
+            return $activity;
+        }
+        return null;
+    }
+
+    /**
+     * @param ActivityModel $activity
+     * @return string
+     */
+    public function getGpx(ActivityModel $activity): ?string
+    {
+        $file = R::findOne('files', 'id = ?', [$activity->fileId]);
+        if ($file) {
+            return $file->content;
+        }
+
+        return null;
+    }
 }

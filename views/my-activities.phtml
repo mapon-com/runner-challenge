@@ -38,7 +38,9 @@ if ($activities) { ?>
                 <td class="align-middle"><?= $a->getReadableDuration(); ?></td>
                 <td class="align-middle"><?= $a->getReadableSpeed(); ?></td>
                 <td class="align-middle"><a href="<?=htmlspecialchars($a->activityUrl);?>" target="_blank" rel="noopener noreferrer"><?= $a->getReadableActivityAt(); ?></a></td>
-                <td class="align-middle"><?= $a->getReadableCreatedAt(); ?></td>
+                <td class="align-middle">
+                    <a href="<?=htmlspecialchars(route('gpx'));?>?activityId=<?=$a->id;?>" target="_blank"><?= $a->getReadableCreatedAt(); ?></a>
+                </td>
                 <td class="align-middle text-right px-0">
                     <?php if (!$a->deletedAt) { ?>
                         <form method="post" action="<?= route('delete-activity'); ?>" class="d-inline-block">

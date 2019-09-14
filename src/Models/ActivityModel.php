@@ -46,6 +46,17 @@ class ActivityModel
         return $m;
     }
 
+    public static function getById(int $activityId): ?ActivityModel
+    {
+        $bean = R::findOne('activities', 'id = ?', [$activityId]);
+
+        if ($bean) {
+            return self::fromBean($bean);
+        }
+
+        return null;
+    }
+
     public function save()
     {
         $bean = R::dispense('activities');
