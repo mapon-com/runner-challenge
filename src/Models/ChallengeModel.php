@@ -15,6 +15,9 @@ class ChallengeModel
     /** @var Carbon When upload is not open */
     public $openUntil;
 
+    /** @var bool */
+    public $isWalking;
+
     public function isOpen(): bool
     {
         return $this->openFrom->isPast() && $this->openUntil->isFuture();

@@ -5,10 +5,9 @@ namespace App\Services;
 use App\Models\ActivityModel;
 use App\Models\ChallengeModel;
 use App\Models\UserModel;
-use Exception;
 use InvalidArgumentException;
 use RedBeanPHP\R;
-use Waddle\Parsers\GPXParser;
+use Throwable;
 
 class ActivityService
 {
@@ -33,20 +32,19 @@ class ActivityService
 
         $imageId = null;
         if ($photoPathname) {
-            $imageId = (new ImageService)->upload($photoPathname, 'images')->id;
+            $imageId = (new ImageService())->upload($photoPathname, 'images')->id;
         }
 
         try {
-            /** @noinspection PhpParamsInspection */
-            $result = (new GPXParser)->parse($pathname);
-        } catch (Exception $e) {
+            $gpxStats = (new GpxParser())->parse($pathname, $challenge->isWalking);
+        } catch (Throwable $e) {
             throw new InvalidArgumentException('The activity file could not be read.');
         }
 
         $content = file_get_contents($pathname);
         $md5 = md5($content);
 
-        if (R::findOne('files', 'md5 = ?', [$md5])) {
+        if (R::findOne('files', 'md5 = ?', [$md5]) && !getenv('DEBUG') === 'true') {
             throw new InvalidArgumentException('This activity has already been uploaded');
         }
 
@@ -59,20 +57,21 @@ class ActivityService
         $file->original_filename = $filename;
         R::store($file);
 
-        $activity = new ActivityModel;
+        $activity = new ActivityModel();
         $activity->challengeId = $challenge->id;
         $activity->userId = $user->id;
         $activity->fileId = $file->id;
         $activity->activityUrl = $activityUrl;
         $activity->imageId = $imageId;
         $activity->comment = mb_substr(trim($comment), 0, 500);
-        $activity->distance = $result->getTotalDistance();
-        $activity->averageSpeed = $result->getAverageSpeedInKPH();
-        $activity->maxSpeed = $result->getMaxSpeedInKPH();
-        $activity->duration = $result->getTotalDuration();
-        $activity->activityAt = $result->getStartTime('U');
+        $activity->distance = $gpxStats->distance;
+        $activity->averageSpeed = $gpxStats->getAverageSpeedKmh();
+        $activity->maxSpeed = 0;
+        $activity->duration = $gpxStats->duration;
+        $activity->activityAt = $gpxStats->startTime;
         $activity->createdAt = time();
         $activity->deletedAt = null;
+
         $activity->save();
 
         $this->notifyAboutActivity($user, $activity);
@@ -109,7 +108,7 @@ class ActivityService
             return false;
         }
 
-        return (new SettingsService)->get('can_upload', false);
+        return (new SettingsService())->get('can_upload', false);
     }
 
     /**
@@ -119,7 +118,7 @@ class ActivityService
      */
     public function setUpload(bool $canUpload)
     {
-        return (new SettingsService)->set('can_upload', $canUpload);
+        return (new SettingsService())->set('can_upload', $canUpload);
     }
 
     private function notifyAboutActivity(UserModel $user, ActivityModel $activity)
@@ -150,7 +149,7 @@ class ActivityService
             ];
         }
 
-        (new Slack)->send($message, $attachments);
+        (new Slack())->send($message, $attachments);
     }
 
     private function getQuote(): string

@@ -15,7 +15,9 @@ class ActivityModel
     public $fileId;
     public $activityUrl;
     public $comment;
+    /** @var float Meters */
     public $distance;
+    /** @var float km/h */
     public $averageSpeed;
     public $maxSpeed;
     public $duration;

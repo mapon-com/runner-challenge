@@ -17,14 +17,10 @@
         "maknz/slack": "^1.7",
         "filp/whoops": "^2.4",
         "monolog/monolog": "^1.24",
-        "duckfusion/waddle": "^1.0",
-        "symfony/var-dumper": "^4.3"
+        "symfony/var-dumper": "^4.3",
+        "sibyx/phpgpx": "dev-master"
     },
     "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/briedis/waddle"
-        }
     ],
     "authors": [
         {
