@@ -45,8 +45,7 @@ class ActivityService
         $md5 = md5($content);
 
         if (R::findOne('files', 'md5 = ?', [$md5]) && !getenv('DEBUG') === 'true') {
-            // TODO temporarily disable duplicate check so people can upload broken activities
-            // throw new InvalidArgumentException('This activity has already been uploaded');
+            throw new InvalidArgumentException('This activity has already been uploaded');
         }
 
         $file = R::dispense('files');
