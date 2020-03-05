@@ -53,8 +53,8 @@ class ChallengeService
 
         $challenge = new ChallengeModel();
         $challenge->id = 4;
-        $challenge->openFrom = Carbon::createFromDate(2020, 3, 15, 'Europe/Riga')->setTime(0, 0, 0);
-        $challenge->openUntil = Carbon::createFromDate(2020, 4, 15, 'Europe/Riga')->setTime(23, 59, 59);
+        $challenge->openFrom = Carbon::createFromDate(2020, 3, 12, 'Europe/Riga')->setTime(0, 0, 0);
+        $challenge->openUntil = Carbon::createFromDate(2020, 4, 2, 'Europe/Riga')->setTime(23, 59, 59);
         $challenge->isWalking = true;
         $all[] = $challenge;
 
