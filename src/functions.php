@@ -28,3 +28,21 @@ function asset(string $url, bool $absolute = false): string
 {
     return route('index', $absolute) . ltrim($url, '/');
 }
+
+/**
+ * Check if current IP is in the whitelist
+ * @return bool
+ */
+function is_ip_whitelisted()
+{
+    $whitelisted = explode(',', getenv('IP_WHITELIST'));
+    $whitelisted = array_filter(array_map('trim', $whitelisted));
+
+    if (!$whitelisted) {
+        return false;
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+
+    return $ip && in_array($ip, $whitelisted, true);
+}

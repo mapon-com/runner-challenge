@@ -36,8 +36,6 @@ class Bootstrap
         session_set_cookie_params(30 * 24 * 3600);
         session_start();
 
-        $this->failIfIpNotAllowed();
-
         require __DIR__ . '/functions.php';
 
         /** @var RouteCollection $routes */
@@ -94,22 +92,5 @@ class Bootstrap
         $log->pushHandler(new StreamHandler(__DIR__ . '/../storage/app.log', Logger::ERROR));
 
         ErrorHandler::register($log);
-    }
-
-    private function failIfIpNotAllowed()
-    {
-        $whitelisted = explode(',', getenv('IP_WHITELIST'));
-        $whitelisted = array_filter(array_map('trim', $whitelisted));
-
-        if (!$whitelisted) {
-            return;
-        }
-
-        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
-
-        if (!$ip || !in_array($ip, $whitelisted, true)) {
-            echo "Sorry, your IP is not whitelisted.";
-            die;
-        }
     }
 }

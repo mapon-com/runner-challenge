@@ -182,6 +182,10 @@ class Controller extends BaseController
             return $this->redirect('board', 'Welcome back, ' . htmlspecialchars($user->name));
         }
 
+        if (!is_ip_whitelisted()) {
+            return $this->redirect('register', 'Registration is not allowed from this IP address');
+        }
+
         try {
             $user = $this->users->register($email, $password, $name);
             $this->users->logIn($user);
