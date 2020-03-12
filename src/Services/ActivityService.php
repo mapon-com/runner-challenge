@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\ActivityModel;
 use App\Models\ChallengeModel;
+use App\Models\TeamModel;
+use App\Models\TeamUserModel;
 use App\Models\UserModel;
 use InvalidArgumentException;
 use RedBeanPHP\R;
@@ -74,7 +76,13 @@ class ActivityService
 
         $activity->save();
 
-        $this->notifyAboutActivity($user, $activity);
+        $teamUser = TeamUserModel::findOneByChallenge($user->id, $challenge->id);
+        $team = null;
+        if ($teamUser) {
+            $team = (new TeamService())->getById($teamUser->teamId);
+        }
+
+        $this->notifyAboutActivity($user, $activity, $team);
 
         return true;
     }
@@ -121,9 +129,11 @@ class ActivityService
         return (new SettingsService())->set('can_upload', $canUpload);
     }
 
-    private function notifyAboutActivity(UserModel $user, ActivityModel $activity)
+    private function notifyAboutActivity(UserModel $user, ActivityModel $activity, ?TeamModel $team)
     {
-        $message = ":fire: *{$user->name}* just logged *{$activity->getReadableDistance()}* in *{$activity->getReadableDuration()}*.";
+        $teamName = $team ? "_({$team->name})_" : '';
+
+        $message = ":fire: *{$user->name}*{$teamName} just logged *{$activity->getReadableDistance()}* in *{$activity->getReadableDuration()}*.";
         $message .= " {$this->getQuote()}";
 
         [$name] = explode(' ', $user->name);
