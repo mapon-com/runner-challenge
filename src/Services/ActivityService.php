@@ -131,7 +131,7 @@ class ActivityService
 
     private function notifyAboutActivity(UserModel $user, ActivityModel $activity, ?TeamModel $team)
     {
-        $teamName = $team ? "_({$team->name})_" : '';
+        $teamName = $team ? " _({$team->name})_" : '';
 
         $message = ":fire: *{$user->name}*{$teamName} just logged *{$activity->getReadableDistance()}* in *{$activity->getReadableDuration()}*.";
         $message .= " {$this->getQuote()}";
