@@ -38,7 +38,7 @@ class ActivityService
         }
 
         try {
-            $gpxStats = (new GpxParser())->parse($pathname, $challenge->isWalking);
+            $gpxStats = (new GpxParser())->parse($pathname, (bool)$challenge->isWalking);
         } catch (Throwable $e) {
             throw new InvalidArgumentException('The activity file could not be read.');
         }
