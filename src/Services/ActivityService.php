@@ -159,6 +159,12 @@ class ActivityService
             ];
         }
 
+        $attachments[] = [
+            'fallback' => $this->getLinkMessage() . ' ' . routeWithParams('view-activity', ['id' => $activity->id], true),
+            'text' => $this->getLinkMessage() . ' ' . routeWithParams('view-activity', ['id' => $activity->id], true),
+            'color' => 'gray'
+        ];
+
         (new Slack())->send($message, $attachments);
     }
 
@@ -189,6 +195,24 @@ class ActivityService
         shuffle($q);
 
         return array_pop($q);
+    }
+
+    private function getLinkMessage(): string
+    {
+        $m = [
+            'Check it out: ',
+            'See more: ',
+            'Click for more: ',
+            'View activity: ',
+            'Show me more: ',
+            'Take me there: ',
+            'Want to know more? ',
+            'Find out more: ',
+            'See for yourself: '
+        ];
+
+        shuffle($m);
+        return array_pop($m);
     }
 
     public function deleteActivity(UserModel $user, int $activityId): bool
