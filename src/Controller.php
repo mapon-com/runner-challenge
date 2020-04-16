@@ -339,12 +339,12 @@ class Controller extends BaseController
         $userId = (int)($this->parameters['id'] ?? 0);
         $user = $this->users->findById($userId);
         if (!$user) {
-            $this->redirect('board', 'User not found');
+            return $this->redirect('board', 'User not found');
         }
 
         $activities = $this->activities->getActivities($this->challenge, $user);
         if (!$activities) {
-            $this->redirect('board', 'No activities found');
+            return $this->redirect('board', 'No activities found');
         }
 
         return $this->render('view-activities', [
@@ -358,7 +358,7 @@ class Controller extends BaseController
         $activityId = (int)($this->parameters['id'] ?? 0);
         $activity = $this->activities->getActivityById($activityId);
         if (!$activity || (int)$activity->challengeId !== $this->challenge->id) {
-            $this->redirect('board', 'Activity not found');
+            return $this->redirect('board', 'Activity not found');
         }
 
         $coordinates = (new GpxParser())->getCoordinates($this->activities->getGpx($activity));
