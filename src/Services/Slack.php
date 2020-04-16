@@ -16,6 +16,7 @@ class Slack
         $this->client->setDefaultChannel(getenv('SLACK_CHANNEL'));
         $this->client->setDefaultIcon(':challenge:');
         $this->client->setDefaultUsername('Challenge');
+        $this->client->setLinkNames(true);
     }
 
     public function send(string $message, array $attachments = []): bool

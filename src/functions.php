@@ -35,7 +35,9 @@ function asset(string $url, bool $absolute = false): string
  */
 function is_ip_whitelisted()
 {
-    $whitelisted = explode(',', getenv('IP_WHITELIST'));
+    //allow all since the site is hosted on Mapon Dev server
+    return true;
+    /*$whitelisted = explode(',', getenv('IP_WHITELIST'));
     $whitelisted = array_filter(array_map('trim', $whitelisted));
 
     if (!$whitelisted) {
@@ -44,5 +46,5 @@ function is_ip_whitelisted()
 
     $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
-    return $ip && in_array($ip, $whitelisted, true);
+    return $ip && in_array($ip, $whitelisted, true);*/
 }
