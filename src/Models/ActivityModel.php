@@ -100,6 +100,16 @@ class ActivityModel
         return Carbon::createFromTimestamp($this->createdAt)->diffForHumans();
     }
 
+    public function getFormattedActivityAt(string $format = null): string
+    {
+        $dt = Carbon::createFromTimestamp($this->activityAt);
+        if (!$format) {
+            return $dt->format('D, M j, Y G:i');
+        }
+
+        return $dt->format($format);
+    }
+
     public function getReadableDistance(): string
     {
         return round($this->distance / 1000, 2) . ' km';
@@ -124,5 +134,10 @@ class ActivityModel
             return ImageModel::getById($this->imageId);
         }
         return null;
+    }
+
+    public function getUser(): UserModel
+    {
+        return UserModel::findById($this->userId);
     }
 }

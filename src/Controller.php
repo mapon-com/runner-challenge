@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\GpxParser;
 use App\Services\ImageService;
 use App\Services\MessageService;
 use App\Services\TextService;
@@ -349,6 +350,26 @@ class Controller extends BaseController
         return $this->render('view-activities', [
             'activities' => $activities,
             'title' => htmlspecialchars($user->name) . ' activities'
+        ]);
+    }
+
+    public function viewActivity()
+    {
+        $activityId = (int)($this->parameters['id'] ?? 0);
+        $activity = $this->activities->getActivityById($activityId);
+        if (!$activity || (int)$activity->challengeId !== $this->challenge->id) {
+            $this->redirect('board', 'Activity not found');
+        }
+
+        $coordinates = (new GpxParser())->getCoordinates($this->activities->getGpx($activity));
+
+        return $this->render('view-activity', [
+            'activity' => $activity,
+            'coordinates' => $coordinates['points'],
+            'start' => $coordinates['start'],
+            'end' => $coordinates['end'],
+            'track' => $coordinates['track'],
+            'title' => 'View activity by ' . $activity->getUser()->name . ' at ' . $activity->getFormattedActivityAt()
         ]);
     }
 }

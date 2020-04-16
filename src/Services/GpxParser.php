@@ -81,4 +81,36 @@ class GpxParser
         }, 0);
     }
 
+    /**
+     * @param $gpxFile
+     * @return array
+     */
+    public function getCoordinates($gpxFile): array
+    {
+        $parsed = phpGPX::parse($gpxFile);
+        $coords = [
+            'points' => []
+        ];
+        foreach ($parsed->tracks as $v) {
+            if (!isset($coords['start']) && $v->stats->startedAt) {
+                $coords['start'] = $v->stats->startedAt->format('D, M j, Y G:i');
+            }
+            if ($v->stats->finishedAt) {
+                $coords['end'] = $v->stats->finishedAt->format('D, M j, Y G:i');
+            }
+            $coords['track'] = $v->name ?? '';
+
+            foreach ($v->segments as $v2) {
+                foreach ($v2->points as $key => $point) {
+                    $coords['points'][] = [
+                        $point->latitude,
+                        $point->longitude
+                    ];
+                }
+            }
+        }
+
+        return $coords;
+    }
+
 }

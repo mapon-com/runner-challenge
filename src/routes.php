@@ -22,6 +22,8 @@ $routes->add('participate', new Route('/participate', ['action' => 'participate'
 $routes->add('gpx', new Route('/gpx', ['action' => 'downloadGpx']));
 $routes->add('view-activities', (new Route('/user/{id}/activities', ['action' => 'viewActivities']))
     ->setMethods(['GET'])->setRequirement('id', '\d+'));
+$routes->add('view-activity', (new Route('/activity/view/{id}', ['action' => 'viewActivity']))
+    ->setMethods(['GET'])->setRequirement('id', '\d+'));
 
 $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
 $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));

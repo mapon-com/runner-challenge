@@ -214,6 +214,16 @@ class ActivityService
         return null;
     }
 
+    public function getActivityById(int $activityId): ?ActivityModel
+    {
+        $activity = ActivityModel::getById($activityId);
+        if ($activity && !$activity->deletedAt) {
+            return $activity;
+        }
+
+        return null;
+    }
+
     /**
      * @param ActivityModel $activity
      * @return string
