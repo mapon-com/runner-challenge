@@ -35,6 +35,9 @@ abstract class BaseController
     /** @var ChallengeService */
     protected $challenges;
 
+    /** @var array  */
+    protected $parameters = [];
+
     public function __construct()
     {
         $this->users = new UserService;
@@ -59,6 +62,7 @@ abstract class BaseController
 
     public function call(array $parameters)
     {
+        $this->parameters = $parameters;
         $isAdmin = $parameters['admin'] ?? false;
         $isPublic = !$isAdmin && ($parameters['public'] ?? false);
         $isMaintenance = getenv('MAINTENANCE') === 'true';

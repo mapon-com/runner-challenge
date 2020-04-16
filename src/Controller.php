@@ -332,4 +332,23 @@ class Controller extends BaseController
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         return $gpx;
     }
+
+    public function viewActivities()
+    {
+        $userId = (int)($this->parameters['id'] ?? 0);
+        $user = $this->users->findById($userId);
+        if (!$user) {
+            $this->redirect('board', 'User not found');
+        }
+
+        $activities = $this->activities->getActivities($this->challenge, $user);
+        if (!$activities) {
+            $this->redirect('board', 'No activities found');
+        }
+
+        return $this->render('view-activities', [
+            'activities' => $activities,
+            'title' => htmlspecialchars($user->name) . ' activities'
+        ]);
+    }
 }

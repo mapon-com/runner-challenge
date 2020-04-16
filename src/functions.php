@@ -20,6 +20,24 @@ function route($route, bool $absolute = false): string
 }
 
 /**
+ * @param $route
+ * @param array $params
+ * @param bool $absolute
+ * @return string
+ */
+function routeWithParams($route, array $params, bool $absolute = false): string
+{
+    $prefix = '';
+
+    if ($absolute) {
+        $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+        $prefix = ($isHttps ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+    }
+
+    return $prefix . Bootstrap::$routeGenerator->generate($route, $params);
+}
+
+/**
  * @param string $url
  * @param bool $absolute
  * @return string
@@ -47,4 +65,10 @@ function is_ip_whitelisted()
     $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
     return $ip && in_array($ip, $whitelisted, true);*/
+}
+
+function minifyUrl(string $url)
+{
+    $parseUrl = parse_url(trim($url));
+    return trim($parseUrl['host'] ? $parseUrl['host'] : array_shift(explode('/', $parseUrl['path'], 2)));
 }

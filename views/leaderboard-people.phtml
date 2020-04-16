@@ -38,7 +38,12 @@ $i = 0;
                     <span class="badge p-0"><?= htmlspecialchars($a->teamName); ?></span>
                 </td>
                 <td><?= $a->getReadableDistance(); ?></td>
-                <td class="text-center"><?= $a->activityCount; ?></td>
+                <td class="text-center">
+                    <?= $a->activityCount; ?>
+                    <?php if ($a->activityCount > 0) { ?>
+                        <a style="text-decoration: none;" href="<?= routeWithParams('view-activities', ['id' => $a->id]);?>">➡️</a>
+                    <?php } ?>
+                </td>
                 <td><?= $a->getReadableLastActivityAt(); ?></td>
             </tr>
         <?php } ?>

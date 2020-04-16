@@ -20,6 +20,8 @@ $routes->add('delete-activity', new Route('/delete-activity', ['action' => 'dele
 $routes->add('edit-team', new Route('/edit-team', ['action' => 'editTeam']));
 $routes->add('participate', new Route('/participate', ['action' => 'participate']));
 $routes->add('gpx', new Route('/gpx', ['action' => 'downloadGpx']));
+$routes->add('view-activities', (new Route('/user/{id}/activities', ['action' => 'viewActivities']))
+    ->setMethods(['GET'])->setRequirement('id', '\d+'));
 
 $routes->add('admin', new Route('/admin', ['action' => 'admin', 'admin' => true]));
 $routes->add('add-team', new Route('/admin/add-team', ['action' => 'addTeam', 'admin' => true]));
