@@ -51,7 +51,7 @@ if ($activities) { ?>
                     <?= htmlspecialchars($a->comment ?? ''); ?>
                 </td>
                 <td class="align-middle text-right px-0">
-                    <a href="<?= routeWithParams('view-activity', ['id' => $a->id]) ?>">➡️</a>
+                    <a style="text-decoration: none;" href="<?= routeWithParams('view-activity', ['id' => $a->id]) ?>">➡️</a>
                 </td>
             </tr>
         <?php } ?>
