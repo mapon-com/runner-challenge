@@ -5,6 +5,7 @@ namespace App;
 use App\Models\TeamUserModel;
 use App\Services\ActivityService;
 use App\Services\ChallengeService;
+use App\Services\StatisticsService;
 use App\Services\TeamService;
 use App\Services\UserService;
 use League\Plates\Engine;
@@ -38,6 +39,9 @@ abstract class BaseController
     /** @var array  */
     protected $parameters = [];
 
+    /** @var StatisticsService */
+    protected $statistics;
+
     public function __construct()
     {
         $this->users = new UserService;
@@ -45,6 +49,7 @@ abstract class BaseController
         $this->user = $this->users->getLoggedIn();
         $this->teams = new TeamService;
         $this->challenges = new ChallengeService;
+        $this->statistics = new StatisticsService;
 
         $viewChallengeId = $_GET['challengeId'] ?? null;
         $this->challenge = $viewChallengeId ? $this->challenges->getById($viewChallengeId) : $this->challenges->getCurrent();

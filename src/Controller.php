@@ -219,12 +219,15 @@ class Controller extends BaseController
 
     public function admin()
     {
+        $this->statistics->getChallengeStatsGraph($this->challenge);
+        die();
         return $this->render('admin', [
             'canUpload' => $this->activities->canUpload(null),
             'teams' => $this->challenge ? $this->teams->getAll($this->challenge) : [],
             'users' => $this->users->getAll(),
             'rules' => (new TextService)->getRules(),
             'challenge' => $this->challenge,
+            'stats' => $this->statistics->getChallengeStats($this->challenge)->toReadable()
         ]);
     }
 
