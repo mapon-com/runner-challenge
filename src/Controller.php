@@ -219,8 +219,6 @@ class Controller extends BaseController
 
     public function admin()
     {
-        $this->statistics->getChallengeStatsGraph($this->challenge);
-        die();
         return $this->render('admin', [
             'canUpload' => $this->activities->canUpload(null),
             'teams' => $this->challenge ? $this->teams->getAll($this->challenge) : [],
