@@ -225,7 +225,8 @@ class Controller extends BaseController
             'users' => $this->users->getAll(),
             'rules' => (new TextService)->getRules(),
             'challenge' => $this->challenge,
-            'stats' => $this->statistics->getChallengeStats($this->challenge)->toReadable()
+            'stats' => $this->statistics->getChallengeStats($this->challenge)->toReadable(),
+            'graph' => $this->statistics->getChallengeStatsGraph($this->challenge)
         ]);
     }
 

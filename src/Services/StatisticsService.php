@@ -58,6 +58,10 @@ class StatisticsService
         return $stats;
     }
 
+    /**
+     * @param ChallengeModel $challenge
+     * @return StatisticsGraphModel
+     */
     public function getChallengeStatsGraph(ChallengeModel $challenge): StatisticsGraphModel
     {
         $bindings = [
@@ -80,9 +84,15 @@ class StatisticsService
         return $this->parseGraphData($totalsRaw, $challenge);
     }
 
+    /**
+     * @param array $totalsRaw
+     * @param ChallengeModel $challenge
+     * @return StatisticsGraphModel
+     */
     private function parseGraphData(array $totalsRaw, ChallengeModel $challenge): StatisticsGraphModel
     {
         $graph = new StatisticsGraphModel($challenge);
+        $graph->fill($totalsRaw);
 
         return $graph;
     }
