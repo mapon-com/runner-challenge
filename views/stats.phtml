@@ -1,0 +1,240 @@
+<?php
+use App\Models\StatisticsModelReadable;
+use App\Models\StatisticsGraphModel;
+
+$v->layout('dashboard', ['title' => 'Stats']);
+$v->push('card');
+
+/**
+ * @var StatisticsModelReadable $stats
+ * @var StatisticsGraphModel $graph
+ */
+?>
+
+<div class="row">
+    <div class="col-6">
+        <div class="card mb-3">
+            <div class="card-header p-1 pl-2">
+                Totals
+            </div>
+            <div class="card-body p-1 pl-2">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-0">Distance: <?= $stats->totalDistance; ?></li>
+                    <li class="list-group-item p-0">Duration: <?= $stats->totalDuration; ?></li>
+                    <li class="list-group-item p-0">Activities: <?= $stats->totalActivities; ?></li>
+                    <li class="list-group-item p-0">Participants: <?= $stats->participants; ?></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header p-1 pl-2">
+                Average per day
+            </div>
+            <div class="card-body p-1 pl-2">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-0">Distance: <?= $stats->distancePerDay; ?></li>
+                    <li class="list-group-item p-0">Duration: <?= $stats->durationPerDay; ?></li>
+                    <li class="list-group-item p-0">Activities: <?= $stats->activitiesPerDay; ?></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card mb-3">
+            <div class="card-header p-1 pl-2">
+                Averages
+            </div>
+            <div class="card-body p-1 pl-2">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-0">Distance: <?= $stats->averageDistance; ?></li>
+                    <li class="list-group-item p-0">Duration: <?= $stats->averageDuration; ?></li>
+                    <li class="list-group-item p-0">Speed: <?= $stats->averageSpeed; ?></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header p-1 pl-2">
+                Average per user
+            </div>
+            <div class="card-body p-1 pl-2">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-0">Distance: <?= $stats->distancePerUser; ?></li>
+                    <li class="list-group-item p-0">Duration: <?= $stats->durationPerUser; ?></li>
+                    <li class="list-group-item p-0">Activities: <?= $stats->activitiesPerUser; ?></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <canvas id="canvas-activities" height="100"></canvas>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <canvas id="canvas-distance" height="100"></canvas>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-12">
+        <canvas id="canvas-duration" height="100"></canvas>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('canvas-activities').getContext('2d');
+        var activitiesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: <?= json_encode($graph->formattedDates()); ?>,
+                datasets: [{
+                    label: 'Activities per day',
+                    data: <?= json_encode($graph->getActivityDataset()); ?>,
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    fill: false
+                }, {
+                    label: 'Participants per day',
+                    data: <?= json_encode($graph->getParticipantDataset()); ?>,
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: false
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        },
+                        scaleLabel: {
+                            display: false,
+                        },
+                        gridLines: {
+                            display: false,
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                        }
+                    }]
+                },
+            },
+        });
+
+        var dst = document.getElementById('canvas-distance').getContext('2d');
+        var distanceChart = new Chart(dst, {
+            type: 'line',
+            data: {
+                labels: <?= json_encode($graph->formattedDates()); ?>,
+                datasets: [{
+                    label: 'Distance per day',
+                    data: <?= json_encode($graph->getDistanceDataset()); ?>,
+                    backgroundColor: 'rgb(255, 159, 64)',
+                    borderColor: 'rgb(255, 159, 64)',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: false
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Km'
+                        },
+                        gridLines: {
+                            display: false,
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                        }
+                    }]
+                },
+            },
+        });
+
+        var dur = document.getElementById('canvas-duration').getContext('2d');
+        var durationChart = new Chart(dur, {
+            type: 'line',
+            data: {
+                labels: <?= json_encode($graph->formattedDates()); ?>,
+                datasets: [{
+                    label: 'Duration per day',
+                    data: <?= json_encode($graph->getDurationDataset()); ?>,
+                    backgroundColor: 'rgb(75, 192, 192)',
+                    borderColor: 'rgb(75, 192, 192)',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: false
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'hours'
+                        },
+                        gridLines: {
+                            display: false,
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                        }
+                    }]
+                },
+            },
+        });
+    });
+</script>
+<?php
+$v->end();

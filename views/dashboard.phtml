@@ -10,12 +10,15 @@ use App\Models\ChallengeModel; ?>
 
 $links = [
     'board' => 'My Activities',
-    'my-team' => 'My Team',
-    'team-leaderboard' => 'Teams',
+    //'my-team' => 'My Team',
+    //'team-leaderboard' => 'Teams',
     'people-leaderboard' => 'People',
     'rules' => 'Rules',
 ];
 
+if (getenv('SHOW_STATS_PUBLIC') === 'true') {
+    $links['statistics'] = 'Stats';
+}
 ?>
 
 <div class="row">

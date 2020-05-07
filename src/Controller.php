@@ -211,6 +211,18 @@ class Controller extends BaseController
         ]);
     }
 
+    public function statistics()
+    {
+        if (getenv('SHOW_STATS_PUBLIC') !== 'true') {
+            return $this->redirect('board');
+        }
+
+        return $this->render('stats', [
+            'stats' => $this->statistics->getChallengeStats($this->challenge)->toReadable(),
+            'graph' => $this->statistics->getChallengeStatsGraph($this->challenge)
+        ]);
+    }
+
     public function logout()
     {
         $this->users->logOut();
