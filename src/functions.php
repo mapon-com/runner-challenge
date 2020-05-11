@@ -59,7 +59,7 @@ function is_ip_whitelisted()
     $whitelisted = array_filter(array_map('trim', $whitelisted));
 
     if (!$whitelisted) {
-        return false;
+        return true;
     }
 
     $ip = $_SERVER['REMOTE_ADDR'] ?? null;
